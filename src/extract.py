@@ -331,15 +331,15 @@ def adjust_phrase_aws(phrase):
 def print_all_document_paths(folder_path):
     paths = []
     # Define the document file extensions you want to include
-    document_extensions = ['.txt', '.pdf', '.doc', '.docx']
+    document_extensions = ['.txt', '.pdf', '.doc', '.docx', '.csv',]
 
     # Walk through the directory tree
     for root, dirs, files in os.walk(folder_path):
         for file in files:
-            if any(file.endswith(ext) for ext in document_extensions):
+            #if any(file.endswith(ext) for ext in document_extensions):
                 # Construct the full file path
-                file_path = os.path.join(root, file)
-                paths.append(file_path)
+            file_path = os.path.join(root, file)
+            paths.append(file_path)
     return paths
 
 def get_all_pdf_paths(folder_path):
@@ -356,9 +356,9 @@ def get_root_path():
     #print("Parent path:", parent_path)
     return parent_path
 
-def get_text_path(raw_path, mode, approach = 'plumber'):
+def get_text_path(raw_path, mode, approach = ''):
     text_path = raw_path.replace('raw','extracted')
-    text_path = text_path.replace('.pdf','_' + approach + mode)
+    text_path = text_path.replace('.pdf', mode)
     return text_path
 
 def write_phrase(path, phrases):
@@ -539,15 +539,70 @@ def phrase_extraction_pipeline_aws(raw_folder):
     # doc_lines_df = pd.DataFrame(doc_lines, columns=['Page', 'Phrase', 'x1', 'y1', 'x2', 'y2'])
     # doc_lines_df.to_csv(file_name+'.csv')
 
+import csv
+
+def phrase_extraction_pipeline(data_folder): 
+    paths = print_all_document_paths(data_folder)
+    for path in paths:
+        if('.csv' not in path):
+            continue
+
+        if('relative_location' in path):
+            continue
+        
+        print(path)
+        text_path = path.replace('.csv', '.txt')
+        dict_path = path.replace('.csv', '.json')
+        if os.path.exists(text_path):
+            continue
+        raw_phrases, phrases = csv_2_raw_phrases(path)
+        
+
+        # print(text_path)
+        # print(dict_path)
+        if not os.path.exists(text_path):
+            write_phrase(text_path, raw_phrases)
+        else:
+            print('exist!')
+        if not os.path.exists(dict_path):
+            write_dict(dict_path, phrases)
+        else:
+            print('exist!')
+
+        #break
+
+
+def csv_2_raw_phrases(csv_path):
+    phrases = {}
+    raw_phrases = []
+    with open(csv_path, mode='r') as file:
+        csv_reader = csv.DictReader(file)  # Reads rows as dictionaries
+        for row in csv_reader:
+            if('text' in row):
+                p = row['text']
+            else:
+                p = row['Phrase']
+            #print(p)  # Each row is a dictionary
+            x0 = float(row['x0'])
+            x1 = float(row['x1'])
+            y0 = float(row['y0'])
+            y1 = float(row['y1'])
+            bb = tuple([x0,y1,x1,y0])
+            raw_phrases.append(p)
+            if(p not in phrases):
+                phrases[p] = [bb]
+            else:
+                phrases[p].append(bb)
+            #break
+
+    return raw_phrases, phrases
+    
 
 if __name__ == "__main__":
     root_path = get_root_path()
-    data_folder = root_path + '/data/raw/benchmark1/'
-    page_limit = 10 #number of page for data extraction
-    #write_texts_plumber(data_folder,page_limit)
-    #phrase_extraction_pipeline_aws(data_folder)
+    data_folder = root_path + '/data/extracted/benchmark1/'
     
-    phrase_extraction_pipeline_pdfplumber(data_folder, page_limit)
+    phrase_extraction_pipeline(data_folder)
     
 
     
