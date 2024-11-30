@@ -362,8 +362,8 @@ def load_keys():
         #break
 
 if __name__ == "__main__":
-    #eval_benchmark()
-    load_keys()
+    eval_benchmark()
+    #load_keys()
 
     
 

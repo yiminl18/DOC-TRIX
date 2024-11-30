@@ -53,9 +53,10 @@ def record_extraction(pss,predict_labels):
             rid += 1
         ps.append(p)
         if(p in predict_labels):
-            print(first_key)
+            #print(p)
             if(first_key == 'null'):
                 first_key = p
+                #print('first key:', first_key)
     
     return phrases 
 
@@ -1201,6 +1202,8 @@ def filter_non_key(lst, non_key):
 def mix_pattern_extract_pipeline(phrases_bb, predict_labels, phrases, path, debug = 0):
     #get the first record
     #print(phrases)
+    print('predicted labels')
+    print(predict_labels)
     phrases = record_extraction(phrases, predict_labels)
     print(phrases)
     record_appearance = {}
@@ -1222,10 +1225,10 @@ def mix_pattern_extract_pipeline(phrases_bb, predict_labels, phrases, path, debu
         
         record = ILP_extract(predict_labels, pv, rid)
         records.append(record)
-        if(rid > 0):
-            break
+        # if(rid > 0):
+        #     break
     #print(path)
-    #write_json(records, path)
+    write_json(records, path)
 
 def ILP_extract(predict_keys, pv, rid):
     # print(predict_keys)
@@ -1235,7 +1238,7 @@ def ILP_extract(predict_keys, pv, rid):
     #get probability per row 
     row_mp, row_labels = get_row_probabilities(predict_keys, pv)
 
-    #print_rows(row_mp, row_labels)
+    print_rows(row_mp, row_labels)
     #LP formulation to learn row label assignment
 
     #pre-compute all C-alignments 
@@ -1253,11 +1256,11 @@ def ILP_extract(predict_keys, pv, rid):
     #print(Calign)
     row_pred_labels = ILP_formulation(row_mp, row_labels, Calign)
 
-    #print(row_pred_labels)
+    print(row_pred_labels)
     #learn template
     blk, blk_id = template_learn(row_pred_labels)
-    # print(blk)
-    # print(blk_id)
+    print(blk)
+    print(blk_id)
     #data extraction 
     record = data_extraction(rid,blk,blk_id,row_mp,predict_keys)
     #print(record)
@@ -1265,7 +1268,7 @@ def ILP_extract(predict_keys, pv, rid):
 
 def ILP_formulation(row_mp, row_labels, Calign):
     model = Model("RT")
-
+    model.setParam('OutputFlag', 0)
     # create variables 
     # for each row, create four variables 
     vars = {} #row_id -> list of variables 
@@ -1316,7 +1319,7 @@ def ILP_formulation(row_mp, row_labels, Calign):
         prob += var[3]*math.log(row_labels[row_id]['M'])
         log_prob += prob
     model.setObjective(log_prob, GRB.MAXIMIZE)
-
+    
     # Optimize the model
     model.optimize()
 
@@ -1610,6 +1613,8 @@ def write_string(result_path, content):
 def kv_extraction(pdf_path, out_path):
     key_path = pdf_path.replace('data/raw','result').replace('.pdf','_key.txt')
     extracted_path = pdf_path.replace('raw','extracted').replace('.pdf','.txt')
+    if(not os.path.isfile(extracted_path)):
+        return 
     bb_path = get_bb_path(extracted_path)
     
     keywords = read_file(key_path)#predicted keywords
@@ -1625,12 +1630,13 @@ if __name__ == "__main__":
     pdf_folder_path = root_path + '/data/raw'
     pdfs = scan_folder(pdf_folder_path,'.pdf')
     for pdf_path in pdfs:
-        if('Munson' not in pdf_path):
+        if('RptEmp' not in pdf_path):
             continue
         print(pdf_path)
         out_path = key.get_key_val_path(pdf_path, 'TWIX')
         st = time.time()
-        #print(out_path)
+        
         kv_extraction(pdf_path, out_path)
         et=time.time()
+        #print(out_path)
         #print(et-st)
