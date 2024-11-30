@@ -1,11 +1,11 @@
-Page
-BarCode
-Chart
 Demurrage
-CO #
-Size
-PO #CDLocation
-Amount Total
-Delivery Code
-Gas
 Date
+BarCode
+Size
+Chart
+Delivery Code
+CO #
+Page
+Amount Total
+Gas
+PO #CDLocation

@@ -1,4 +1,4 @@
-import key,extract,json,sys,csv,math
+import key,extract,json,sys,csv,math,os
 import numpy as np 
 import key
 import math
@@ -12,6 +12,18 @@ from gurobipy import Model, GRB
 model_name = 'gpt4o'
 vision_model_name = 'gpt4vision'
 
+
+def scan_folder(path, filter_file_type = '.json'):
+    file_names = []
+    for root, dirs, files in os.walk(path):
+        for file in files:
+            file_name = os.path.join(root, file)
+            if('DS_Store' in file_name):
+                continue
+            if(filter_file_type not in file_name):
+                continue
+            file_names.append(file_name)
+    return file_names
 
 def read_file(file):
     data = []
@@ -28,6 +40,7 @@ def read_json(path):
     return data
 
 def record_extraction(pss,predict_labels):
+    #print(predict_labels)
     #only return the first record 
     first_key = 'null'
     phrases = {} #record id -> phrases
@@ -40,6 +53,7 @@ def record_extraction(pss,predict_labels):
             rid += 1
         ps.append(p)
         if(p in predict_labels):
+            print(first_key)
             if(first_key == 'null'):
                 first_key = p
     
@@ -157,114 +171,6 @@ def bipartite_match(edges, num_nodes_A, num_nodes_B):
     #print(weight)
     return matching
 
-def key_val_bipartite_extraction(phrases, phrases_bb, predict_labels):
-    #greedy seems better since biM is globally optimization and local noise would affect other results significantly 
-    phrases = record_extraction(phrases, predict_labels)
-    record_appearance = {}
-    for p in phrases:
-        record_appearance[p] = 0
-
-    record_appearance,pv = get_bblist_per_record(record_appearance, phrases_bb, phrases)
-    #pv: a list of tuple. Each tuple:  (phrase, bounding box) for current record 
-    #construct graph 
-    edges = []
-    left_nodes = {}
-    right_nodes = {}
-    left_id = 0
-    right_id = 0
-
-    c = 0
-    #construct nodes
-    for t in pv:
-        c+=1
-        if(c>=20):
-            break
-        p = t[0]
-        if(p in predict_labels):
-            left_nodes[left_id] = t
-            left_id += 1
-        else:
-            right_nodes[right_id] = t
-            right_id += 1
-
-    #construct edges 
-    for i in range(left_id):
-        for j in range(right_id):
-            dis = min_distance(left_nodes[i][1], right_nodes[j][1])
-            edges.append((i,j,dis))
-            # if(left_nodes[i][0] == 'case number' and right_nodes[j][0] == '21-00017'):
-            #     print(dis)
-            #print(left_nodes[i][0],right_nodes[j][0], dis)
-
-    print('------')
-    #run bipartite_match
-    matching = bipartite_match(edges, left_id, right_id)
-
-    results = []
-    #process matching
-    for left, (right,weight) in matching.items():
-        l = left_nodes[left][0]
-        r = right_nodes[right][0]
-        results.append((l,r))
-        print(l,r,weight)
-    return results
-
-
-def greedy_key_val_extraction_pipeline(phrases, phrases_bb, predict_labels):
-    phrases = record_extraction(phrases, predict_labels)
-    record_appearance = {}
-    for p in phrases:
-        record_appearance[p] = 0
-
-    record_appearance,pv = get_bblist_per_record(record_appearance, phrases_bb, phrases)
-    greedy_key_val_extraction(pv, predict_labels)
-
-def greedy_key_val_extraction(pv, predict_labels):
-    
-    #pv: a list of tuple. Each tuple:  (phrase, bounding box) for current record 
-    #for each predicated key, find its nearest phrases as the value. 
-
-    kvs = []
-    kks = []
-    found = {}
-    ks = []
-    vs = []
-
-    for i in range(len(pv)):
-        dis = 10000
-        target = -1
-        if(pv[i][0] not in predict_labels):
-            vs.append(i)
-            continue
-            #print(pv[i][0])
-        for j in range(i+1, len(pv)):#simple trick, value should appear later than key 
-            if(i==j):
-                continue
-            d = min_distance(pv[i][1],pv[j][1]) 
-            if(d < dis):
-                target = j
-                dis = d
-        if(target != -1 and target not in found):#a new phrase is found
-            if(pv[target][0] in predict_labels): #kk pair 
-                kks.append((i,target))
-                print(pv[i][0],pv[target][0],dis)
-            else:#kv pair
-                kvs.append((i,target))
-                #print(pv[i][0],pv[target][0],dis)
-                found[i] = 1
-                found[target] = 1
-        else:
-            #for a key, the closest phrase has already matched with other
-            ks.append(i)
-            #print(pv[i][0])
-
-    results = []
-
-    #check kv pairs
-    for kv in kvs:
-        results.append((pv[kv[0]][0], pv[kv[1]][0]))
-
-    return results
 
 def is_metadata(meta, val):
     if(val not in meta):
@@ -1294,9 +1200,9 @@ def filter_non_key(lst, non_key):
 
 def mix_pattern_extract_pipeline(phrases_bb, predict_labels, phrases, path, debug = 0):
     #get the first record
-    non_key_meta = ['none','yes','no','/']
-    phrases = record_extraction(phrases, predict_labels)
     #print(phrases)
+    phrases = record_extraction(phrases, predict_labels)
+    print(phrases)
     record_appearance = {}
     for rid, ps in phrases.items():
         for p in ps:
@@ -1307,30 +1213,21 @@ def mix_pattern_extract_pipeline(phrases_bb, predict_labels, phrases, path, debu
     
     for rid, ps in phrases.items():
         record_appearance,pv = get_bblist_per_record(record_appearance, phrases_bb, ps)
-
-        #print(rid)
+        print(rid)
         # vals = []
         # for (val,bb) in pv:
         #     vals.append(val)
         # print(vals)
         # print(record_appearance)
         
-        predict_labels = filter_non_key(predict_labels, non_key_meta)
-        LP_extract(predict_labels, pv)
-        # record,keys = mix_pattern_extract(predict_labels, pv, rid, debug)
-        # if(rid == 1):
-        #     keys = filter_non_key(keys, non_key_meta)
-        #     predict_labels = list(set(keys))
-        #     #if(debug == 1):
-        #     # print('The set of predicted keys:')
-        #     # print(predict_labels)
-        # records.append(record)
-        #print(predict_labels)
+        record = ILP_extract(predict_labels, pv, rid)
+        records.append(record)
         if(rid > 0):
             break
+    #print(path)
     #write_json(records, path)
 
-def LP_extract(predict_keys, pv):
+def ILP_extract(predict_keys, pv, rid):
     # print(predict_keys)
     # for t in pv:
     #     print(t)
@@ -1354,13 +1251,19 @@ def LP_extract(predict_keys, pv):
             #     print((id1,id2))
 
     #print(Calign)
-    row_pred_labels = LP_formulation(row_mp, row_labels, Calign)
+    row_pred_labels = ILP_formulation(row_mp, row_labels, Calign)
 
     #print(row_pred_labels)
     #learn template
+    blk, blk_id = template_learn(row_pred_labels)
+    # print(blk)
+    # print(blk_id)
     #data extraction 
+    record = data_extraction(rid,blk,blk_id,row_mp,predict_keys)
+    #print(record)
+    return record 
 
-def LP_formulation(row_mp, row_labels, Calign):
+def ILP_formulation(row_mp, row_labels, Calign):
     model = Model("RT")
 
     # create variables 
@@ -1434,7 +1337,41 @@ def LP_formulation(row_mp, row_labels, Calign):
     
     return row_pred_labels
 
-    
+def template_learn(rls):
+    blk = {}#store the community of all rows belonging to the same block: bid -> a list of row id 
+    blk_id = {}#store the name per block: bid-> name of block
+    bid = 0
+    nearest_key_bid = 0
+    kv_bid = -1 #all kvs can be put into one block
+    for id, label in rls.items():
+        if(label == 'K'):
+            bid += 1
+            blk[bid] = []
+            blk[bid].append(id)
+            blk_id[bid] = 'table'
+            nearest_key_bid = bid
+        elif(label == 'V' and nearest_key_bid > 0):
+            blk[nearest_key_bid].append(id)
+        elif(label == 'KV'):#start a new block for kv
+            if(kv_bid == -1):
+                bid += 1
+                kv_bid = bid
+                blk[kv_bid] = []
+            blk[kv_bid].append(id)
+            blk_id[kv_bid] = 'kv'
+    #block smooth for kv 
+    #impute all the undefined row inside the kv block to be kv 
+    for bid, name in blk_id.items():
+        if(name == 'kv'):
+            #print(blk[bid])
+            new_row = []
+            l = blk[bid][0]
+            r = blk[bid][len(blk[bid])-1]
+            for i in range(l,r+1):
+                new_row.append(i)
+            blk[bid] = new_row
+            #print(blk[bid])
+    return blk, blk_id
 
 def location_alignment(row_mp, id1, id2):
     return row_aligned(row_mp[id1], row_mp[id2]) 
@@ -1538,6 +1475,8 @@ def row_label_prediction(row, predict_keys):
         label['V'] = vvs/total+delta
         label['KV'] = kvs/total+delta
         label['M'] = 2*delta 
+    if(label['K'] == label['KV']):
+        label['KV'] += delta/2
     return label
 
 def print_rows(row_mp, row_labels):
@@ -1547,6 +1486,56 @@ def print_rows(row_mp, row_labels):
             for (p,bb) in lst:
                 p_print.append(p)
             print(p_print)
+
+def data_extraction(rid,blk,blk_id,row_mp,predict_labels):
+    out = []
+    record = {}
+    record['id'] = rid
+
+    for id, lst in blk.items():
+        object = {}
+        if(blk_id[id] == 'table'):
+            #print(id)
+            object['type'] = 'table'
+            #print(blk_id[id],lst)#lst is the list of row ids belonging to the same community
+            key = [lst[0]]
+            vals = []
+            for id in range(1,len(lst)):
+                vals.append(lst[id])
+            key, rows = table_extraction_top_down(row_mp, key, vals)
+            content = []
+            
+            for row in rows:
+                kvs = {}
+                for i in range(len(key)):
+                    k = key[i]
+                    r = row[i]
+                    kvs[k] = r
+                content.append(kvs)
+            #print(content)
+            object['content'] = content 
+        else:
+            object['type'] = 'kv'
+            #print(blk_id[id],lst)
+            kvs = []#kvs stores a list of tuples, where each tuple is (phrase, bb)
+            for id in lst:
+                kvs += row_mp[id]
+                kv_out = key_val_extraction_by_first_learn(kvs, predict_labels)
+            content = []
+            
+            for kv in kv_out:
+                kvm = {}
+                if(kv[1] == ''):
+                    kvm[kv[0]] = 'missing'
+                else:
+                    kvm[kv[0]] = kv[1]
+                content.append(kvm)
+            object['content'] = content
+        out.append(object)
+    
+    record['content'] = out
+
+    return record 
 
 def mix_pattern_extract(predict_labels, pv, rid, debug = 0):
     
@@ -1619,8 +1608,8 @@ def write_string(result_path, content):
         file.write(content)
 
 def kv_extraction(pdf_path, out_path):
-    key_path = key.get_result_path(pdf_path)#result is the predicted keys
-    extracted_path = key.get_extracted_path(pdf_path)
+    key_path = pdf_path.replace('data/raw','result').replace('.pdf','_key.txt')
+    extracted_path = pdf_path.replace('raw','extracted').replace('.pdf','.txt')
     bb_path = get_bb_path(extracted_path)
     
     keywords = read_file(key_path)#predicted keywords
@@ -1628,17 +1617,20 @@ def kv_extraction(pdf_path, out_path):
     phrases_bb = read_json(bb_path)#phrases with bounding boxes
     debug_mode = 0
 
-    #print(keywords)
     mix_pattern_extract_pipeline(phrases_bb, keywords, phrases, out_path, debug_mode)
 
 if __name__ == "__main__":
     #print(get_metadata())
     root_path = extract.get_root_path()
     pdf_folder_path = root_path + '/data/raw'
-    pdfs = eval.scan_folder(pdf_folder_path,'.pdf')
+    pdfs = scan_folder(pdf_folder_path,'.pdf')
     for pdf_path in pdfs:
-        out_path = key.get_key_val_path(pdf_path, '')
+        if('Munson' not in pdf_path):
+            continue
+        print(pdf_path)
+        out_path = key.get_key_val_path(pdf_path, 'TWIX')
         st = time.time()
+        #print(out_path)
         kv_extraction(pdf_path, out_path)
         et=time.time()
         #print(et-st)

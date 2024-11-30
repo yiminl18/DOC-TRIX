@@ -1,44 +1,41 @@
-Total $
-Tot Spots
-Brand
-Contract No
-Revision Dt
-Station/Market
-T
-SPW
-Agency Commission
-Net Total
-Product Code
-Contract Title
-Month/YR
-S
-Time Period
-S.1
-M
-Price
-Rev#
-Account Executive
-T.1
-Actual Gross Total
-DATE
-Contract Total
-Billing
-Actual Total
-Preempted
-Adjustments
-Start Date
-Description
-RC
-Page
-Made Good
-End Date
-Duration
-Agency Est#
-Contracted Gross Total
-CMS #
-Advertiser
 Line
-Contract Dt
+Total $
 Package
+Station/Market
+Rev#
+Duration
+S
+PAGE
+End Date
+Time Period
+Description
+Billing
+Revision Dt
 W
+Start Date
+Price
+Actual Gross Total
+Agency Commission
+Contract No
+Contracted Gross Total
+Month/YR
+Agency Est#
+T
+Contract Dt
+Net Total
+Actual Total
+M
+DATE
+SPW
+Preempted
 F
+CMS #
+Tot Spots
+Advertiser
+Brand
+Adjustments
+Product Code
+Contract Total
+Contract Title
+Made Good
+Account Executive

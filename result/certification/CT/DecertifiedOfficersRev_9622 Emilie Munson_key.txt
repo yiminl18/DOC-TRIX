@@ -1,6 +1,6 @@
-Year
-Date
-Reason
-Name
-Post ID#
-Department
+DEPARTMENT
+REASON
+YEAR
+DATE
+NAME
+POST ID#

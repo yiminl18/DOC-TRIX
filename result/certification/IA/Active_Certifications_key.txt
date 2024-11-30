@@ -1,8 +1,8 @@
-Certified
 Cert #
-Level
-Probation
-Certificate
-Status Date
-Status
 Expires
+Status
+Level
+Certificate
+Probation
+Status Date
+Certified

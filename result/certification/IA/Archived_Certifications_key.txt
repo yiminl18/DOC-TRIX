@@ -1,9 +1,9 @@
-Certified
-Cert #
-Probation
-I.D.
-Name
-Status Date
-Status
 Certificate Level
+Cert #
 Expires
+Status
+I.D.
+Status Date
+Probation
+Name
+Certified

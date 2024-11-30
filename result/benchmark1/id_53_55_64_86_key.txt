@@ -1,23 +1,20 @@
-Station
-Len
-CI
-Bill To
-Gross Amount
-Date
-Agency Commission
-Day
-Product
-Total Spots
-Estimate #
-Line #
-Time
-Phone#
-Order #
-Terms
-Description
 Net Amount
-Rate
+Day
+Gross Amount
+Description
+Agency Commission
+Date
+Phone#
+Station
 Invoice #
-Acct Exec
+Line #
+Bill To
+Time
+Product
+CI
+Terms
 Remit To
-Invoice Date
+Len
+Acct Exec
+Order #
+Rate

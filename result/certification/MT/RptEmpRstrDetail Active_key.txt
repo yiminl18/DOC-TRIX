@@ -1,9 +1,9 @@
-Sex
-Instructor
-Birth Date
 Age
 Employee Type
 I.D.
-Name
+Sex
+Instructor
 Employee
+Name
 Supervisor
+Birth Date

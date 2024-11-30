@@ -1,38 +1,35 @@
-Alt Order #
-Length
-Cash/Trade
-Product 1/2
-Week
-Original Date / Revision
-Agency Ref
-Start/\nEnd Time
-Contract Dates
-Advertiser Ref
-Sales Office
-Product
-Contract / Revision
-Agy Code
-Account Executive
-Estimate #
-Ch
-Type
-Start Date
+Line
 Spots/Week
 Property
-Description
-Billing Calendar
-Weekdays
+Agy Code
+Contract Dates
 Start/End Time
-Billing Cycle
-Days
-Rate
-Date Range
-Demographic
-Rate PCode
-Spots
+Contract / Revision
 End Date
-Advertiser Code
-Spot
+Description
+Start Date
+Alt Order #
+Length
+Ch
+Billing Cycle
+Week
+Product
+Original Date / Revision
+Days
 Amount
+Advertiser Ref
+Billing Calendar
+Demographic
+Sales Office
+Estimate #
+Type
+Spot
 Advertiser
-Line
+Account Executive
+Date Range
+Product 1/2
+Agency Ref
+Rate
+Advertiser Code
+Cash/Trade
+Weekdays

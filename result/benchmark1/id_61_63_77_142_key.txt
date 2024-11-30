@@ -1,25 +1,24 @@
-Copy Name
 Salesperson
-Payment Terms
-Length
 Account
-Invoice Month
-Billing Type
-Date
 Spot Summary
 Est. Number
-IDB Code
-Please Remit To
-Total Spots
-KNZZ-AM
-Total
+Copy Name
 Invoice
-Qty
 Description
-Invoice Total
-Flight Dates
-Rate
-Please Remit To: KNZZ News Radio 1100
-ISCI
-Advertiser
+Total Spots
+Date
 Spot Classification
+Total
+Flight Dates
+Length
+ISCI
+Invoice Month
+IDB Code
+KNZZ-AM
+Payment Terms
+Qty
+Please Remit To
+Advertiser
+Invoice Total
+Rate
+Billing Type

@@ -131,6 +131,8 @@ def get_PR(results_kvs, truth_kvs):
     #print(len(truth_kvs))
     precisions = {} #record id ->  precision 
     recalls = {} # record id -> recall
+    avg_precision = 0
+    avg_recall = 0
     for id, truth_kv in truth_kvs.items():
         #print(id)
         precision = 0
@@ -169,6 +171,8 @@ def get_PR(results_kvs, truth_kvs):
         else:
             precision /= len(new_result_kv)
 
+        if(precision  > avg_precision):
+            avg_precision = precision
         #print('FN:')
         #evaluate recall
         for kv in new_truth_kv:
@@ -182,21 +186,24 @@ def get_PR(results_kvs, truth_kvs):
             #     print(kv)
         #print(len(new_truth_kv))
         recall /= len(new_truth_kv)
+        if(recall > avg_recall):
+            avg_recall = recall
+        
 
         precisions[id] = precision
         recalls[id] = recall 
     
     #compute the average 
-    avg_precision = 0
-    avg_recall = 0
-    for id, precision in precisions.items():
-        avg_precision += precision
-    avg_precision /= len(precisions)
-    for id, recall in recalls.items():
-        avg_recall += recall
-    avg_recall /= len(recalls)
+    # avg_precision = 0
+    # avg_recall = 0
+    # for id, precision in precisions.items():
+    #     avg_precision += precision
+    # avg_precision /= len(precisions)
+    # for id, recall in recalls.items():
+    #     avg_recall += recall
+    # avg_recall /= len(recalls)
 
-    return avg_precision, avg_recall, precisions, recalls
+    return avg_precision, avg_recall
 
 def scan_folder(path, filter_file_type = '.json'):
     file_names = []
@@ -217,16 +224,14 @@ def get_result_path(truth_path):
 
 def eval_one_doc(truth_path, result_path):
     truth = read_json(truth_path)
-    truth_kvs = get_leaf_nodes_paris(truth)
+    truth_kvs, truth_keys = get_leaf_nodes_paris(truth)
     if('llmns_' not in result_path):
         result = read_json(result_path)
-        result_kvs = get_leaf_nodes_paris(result)
+        result_kvs, result_keys = get_leaf_nodes_paris(result)
     else:
         result_kvs = get_kv_pairs_csv(result_path)
     #print(truth_kvs)
-    avg_precision, avg_recall, precisions, recalls = get_PR(result_kvs, truth_kvs)
-    print(precisions)
-    print(recalls)
+    avg_precision, avg_recall = get_PR(result_kvs, truth_kvs)
     print(avg_precision, avg_recall)
 
 def get_kv_pairs_csv(result_path):
@@ -287,14 +292,16 @@ def eval_benchmark():
     pdf_folder_path = root_path + '/data/raw'
     pdfs = scan_folder(pdf_folder_path,'.pdf')
     for pdf_path in pdfs:
+        if('certification' not in pdf_path):
+            continue
         print(pdf_path)
-        result_path = pdf_path.replace('data/raw','result').replace('.pdf','__kv.json')
-        print(result_path)
+        result_path = pdf_path.replace('data/raw','result').replace('.pdf','_TWIX_kv.json')
+        #print(result_path)
 
         truth_path = pdf_path.replace('raw','truths').replace('.pdf','.json')
-        print(truth_path)
+        #print(truth_path)
         
-        # eval_one_doc(truth_path, result_path)
+        eval_one_doc(truth_path, result_path)
         
 def write_list(path, phrases):
     out = ''
@@ -311,6 +318,24 @@ def get_root_path():
     #print("Parent path:", parent_path)
     return parent_path
 
+def read_file(file):
+    data = []
+    with open(file, 'r') as file:
+        # Iterate over each line in the file
+        for line in file:
+            # Print the line (you can replace this with other processing logic)
+            data.append(line.strip())
+    return data
+
+def match_phrases(keys, phrases):
+    k = []
+    for key in keys:
+        for phrase in phrases:
+            if(key.lower() == phrase.lower()):
+                k.append(phrase)
+                break
+    return k
+
 def load_keys():
     root_path = get_root_path()
 
@@ -321,8 +346,15 @@ def load_keys():
         truth_path = pdf_path.replace('raw','truths').replace('.pdf','.json')
         if(not os.path.isfile(truth_path)):
             continue 
+        extracted_path = pdf_path.replace('raw','extracted').replace('.pdf','.txt')
+
+        if(not os.path.isfile(extracted_path)):
+            continue
+
+        phrases = read_file(extracted_path)
         truth = read_json(truth_path)
         truth_kvs, keys = get_leaf_nodes_paris(truth)
+        keys = match_phrases(keys, phrases)
         target_path = pdf_path.replace('data/raw','result').replace('.pdf','_key.txt')
         print(keys)
         print(target_path)
@@ -330,7 +362,8 @@ def load_keys():
         #break
 
 if __name__ == "__main__":
-    eval_benchmark()
+    #eval_benchmark()
+    load_keys()
 
     
 

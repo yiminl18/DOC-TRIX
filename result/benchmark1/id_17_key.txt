@@ -1,27 +1,18 @@
-Subject
-Class Min Enrl
-Run Date
-Component
-Arts & Communication - College - Arts & Communication College - Subject
-Instructor
-Report ID
-Class Wait Cap
-Class Enrl Tot
-Arts & Communication - College - Art & Design Department - Subject
-Arts & Communication - College - Communication Dept - Subject
 Business & Economics - College - Accounting Dept - Subject
-Bldg
-Class Nbr
-Course Title
-Section
-Time
-Run Time
-Arts & Communication - College - Theatre & Dance Dept - Subject
-Class Wait Tot
-Units
-Class Enrl Cap
+Class Min Enrl
+Arts & Communication - College - Art & Design Department - Subject
 Room
-Class Equivalents
+Class Wait Cap
+Bldg
+Arts & Communication - College - Communication Dept - Subject
+Instructor
+Class Enrl Cap
+Report ID
+Class Wait Tot
+Time
 Days
-Catalog Nbr
-Topics
+Run Date
+Class Equivalents
+Class Enrl Tot
+Arts & Communication - College - Theatre & Dance Dept - Subject
+Arts & Communication - College - Arts & Communication College - Subject

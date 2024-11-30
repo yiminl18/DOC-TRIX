@@ -1,18 +1,12 @@
-Approved
-Amount Requested
-Agency Name
+Director
 Pending
-Total $
+Grant Title
+Department Summary
+Agency Name
+Amount Awarded
+Approved
+GrantID
 Status
 Department
-Director
-Department Summary
-GrantID
+Amount Requested
 Declined
-Approved $
-Declined $
-Pending $
-Grant Title
-Amount Awarded
-Submitted
-Status Approved
