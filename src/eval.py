@@ -249,24 +249,24 @@ def get_kv_pairs_csv(result_path):
                 kvs[record_id].append((key,value))
     return kvs 
 
-def eval_new_benchmark():
-    result_folder_path = '/Users/yiminglin/Documents/Codebase/Pdf_reverse/result/benchmark1'
-    results = scan_folder(result_folder_path, '.csv')
-    results = sorted(results)
-    for result_path in results:
-        #print(result_path)
-        if('llmns_' not in result_path):
-            continue
+# def eval_new_benchmark():
+#     result_folder_path = '/Users/yiminglin/Documents/Codebase/Pdf_reverse/result/benchmark1'
+#     results = scan_folder(result_folder_path, '.csv')
+#     results = sorted(results)
+#     for result_path in results:
+#         #print(result_path)
+#         if('llmns_' not in result_path):
+#             continue
         
-        truth_path = result_path.replace('result','data/truths')
-        truth_path = truth_path.replace('llmns_','')
-        truth_path = truth_path.replace('csv','json')
-        if not os.path.exists(truth_path):
-            continue
+#         truth_path = result_path.replace('result','data/truths')
+#         truth_path = truth_path.replace('llmns_','')
+#         truth_path = truth_path.replace('csv','json')
+#         if not os.path.exists(truth_path):
+#             continue
         
-        print(result_path)
-        print(truth_path)
-        eval_one_doc(truth_path, result_path)
+#         print(result_path)
+#         print(truth_path)
+#         eval_one_doc(truth_path, result_path)
 
 def get_key_val_path(raw_path, approach):
     path = raw_path.replace('data/raw','result')
@@ -282,22 +282,19 @@ def get_baseline_result(raw_path, approach):
     new_path = directory_path + '/' + file_name
     return new_path
 
-def eval_old_benchmark():
-    pdf_folder_path = '/Users/yiminglin/Documents/Codebase/Pdf_reverse/data/raw/complaints & use of force'
+def eval_benchmark():
+    root_path = get_root_path()
+    pdf_folder_path = root_path + '/data/raw'
     pdfs = scan_folder(pdf_folder_path,'.pdf')
     for pdf_path in pdfs:
-        # if('munson' not in pdf_path.lower()):
-        #     continue
         print(pdf_path)
-        #get result path
-        #result_path = get_key_val_path(pdf_path, '')#result path #this is for naming our own approach 
-        result_path = get_baseline_result(pdf_path, 'llmns')
-        #print(result_path)
-        #get truth path
+        result_path = pdf_path.replace('data/raw','result').replace('.pdf','__kv.json')
+        print(result_path)
         truth_path = pdf_path.replace('raw','truths/key_value_truth').replace('.pdf','.json')
-        #print(truth_path)
+        print(truth_path)
         
-        eval_one_doc(truth_path, result_path)
+        # eval_one_doc(truth_path, result_path)
+        
 def write_list(path, phrases):
     out = ''
     for phrase in phrases:
@@ -332,8 +329,7 @@ def load_keys():
         #break
 
 if __name__ == "__main__":
-    #eval_old_benchmark()
-    load_keys()
+    eval_benchmark()
 
     
 
