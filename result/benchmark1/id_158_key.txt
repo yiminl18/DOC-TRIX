@@ -1,0 +1,44 @@
+Total $
+Tot Spots
+Brand
+Contract No
+Revision Dt
+Station/Market
+T
+SPW
+Agency Commission
+Net Total
+Product Code
+Contract Title
+Month/YR
+S
+Time Period
+S.1
+M
+Price
+Rev#
+Account Executive
+T.1
+Actual Gross Total
+DATE
+Contract Total
+Billing
+Actual Total
+Preempted
+Adjustments
+Start Date
+Description
+RC
+Page
+Made Good
+End Date
+Duration
+Agency Est#
+Contracted Gross Total
+CMS #
+Advertiser
+Line
+Contract Dt
+Package
+W
+F

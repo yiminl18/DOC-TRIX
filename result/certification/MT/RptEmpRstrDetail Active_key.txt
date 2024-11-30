@@ -1,0 +1,9 @@
+Sex
+Instructor
+Birth Date
+Age
+Employee Type
+I.D.
+Name
+Employee
+Supervisor

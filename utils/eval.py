@@ -10,6 +10,7 @@ def read_json(file_path):
 def get_leaf_nodes_paris(data):
     #this function get the key-val pairs in all leaves per record 
     kvs_record = {} #record id -> a list of kvs 
+    keys = []
     for record in data:
         id = record['id']
         content = record['content']
@@ -22,9 +23,11 @@ def get_leaf_nodes_paris(data):
             for tuple in block['content']:
                 #print(tuple)
                 for k,v in tuple.items():
+                    keys.append(k)
                     kvs.append((k,v))
         kvs_record[id] = kvs
-    return kvs_record
+    keys = list(set(keys))
+    return kvs_record, keys
 
 def clean_phrase(p):
     if(isinstance(p,str)):
@@ -295,12 +298,42 @@ def eval_old_benchmark():
         #print(truth_path)
         
         eval_one_doc(truth_path, result_path)
-        
+def write_list(path, phrases):
+    out = ''
+    for phrase in phrases:
+        out += phrase
+        out += '\n'
+    with open(path, 'w') as file:
+        # Write the string to the file
+        file.write(out)
 
+def get_root_path():
+    current_path = os.path.abspath(os.path.dirname(__file__))
+    parent_path = os.path.abspath(os.path.join(current_path, os.pardir))
+    #print("Parent path:", parent_path)
+    return parent_path
 
+def load_keys():
+    root_path = get_root_path()
+
+    pdf_folder_path = root_path + '/data/raw/benchmark1'
+    pdfs = scan_folder(pdf_folder_path,'.pdf')
+    for pdf_path in pdfs:
+        print(pdf_path)
+        truth_path = pdf_path.replace('raw','truths').replace('.pdf','.json')
+        if(not os.path.isfile(truth_path)):
+            continue 
+        truth = read_json(truth_path)
+        truth_kvs, keys = get_leaf_nodes_paris(truth)
+        target_path = pdf_path.replace('data/raw','result').replace('.pdf','_key.txt')
+        print(keys)
+        print(target_path)
+        write_list(target_path, keys)
+        #break
 
 if __name__ == "__main__":
-    eval_old_benchmark()
+    #eval_old_benchmark()
+    load_keys()
 
     
 

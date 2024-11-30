@@ -1,0 +1,39 @@
+Total\nSpots
+In Account\nWith
+Material
+Flight\nDescription
+M/G For
+Invoice Num
+M T W F S S
+Contract Num
+Contract Dates
+Billing Period
+Gross Amt
+Debit
+Day
+Account Exec
+Air Time
+Buy\nLine
+Week Of
+Spots Per Week
+Reconciliation
+CPE
+Total Spots
+Office
+Remarks
+Customer Order
+Commission Amt
+Net Amt
+Linked Order
+NONDISCRIMINATION POLICY
+Credit
+Invoice Date
+Billing Cycle
+Dur
+For
+Rate
+Product Desc
+Air Date
+M T W T F S S
+Remit To
+Buy Line Dates

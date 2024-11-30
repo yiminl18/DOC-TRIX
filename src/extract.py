@@ -484,7 +484,6 @@ def load_file_keys_aws():
     return client
 
 
-
 def create_folder(folder_path): 
 
     # Check if the folder exists, if not, create it
@@ -602,7 +601,8 @@ if __name__ == "__main__":
     root_path = get_root_path()
     data_folder = root_path + '/data/extracted/benchmark1/'
     
-    phrase_extraction_pipeline(data_folder)
+    #phrase_extraction_pipeline(data_folder)
+   
     
 
     

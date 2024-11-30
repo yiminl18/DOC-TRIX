@@ -1,0 +1,23 @@
+Station
+Len
+CI
+Bill To
+Gross Amount
+Date
+Agency Commission
+Day
+Product
+Total Spots
+Estimate #
+Line #
+Time
+Phone#
+Order #
+Terms
+Description
+Net Amount
+Rate
+Invoice #
+Acct Exec
+Remit To
+Invoice Date

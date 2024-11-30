@@ -1,0 +1,19 @@
+Length
+Spot State
+Spot #
+Spot Status
+Order #202078
+Makegood
+State Reaso
+Priority
+Internal Rate 1
+Day
+Air Time
+Order Inventory Desc
+Ad-ID
+Invoiced?
+Channel
+Weekdays
+Line#
+Air Date
+Times
