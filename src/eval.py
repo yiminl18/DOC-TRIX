@@ -292,14 +292,21 @@ def eval_benchmark():
     pdf_folder_path = root_path + '/data/raw'
     pdfs = scan_folder(pdf_folder_path,'.pdf')
     for pdf_path in pdfs:
-        if('certification' not in pdf_path):
+        if('benchmark1' not in pdf_path):
             continue
-        print(pdf_path)
+        
+        
         result_path = pdf_path.replace('data/raw','result').replace('.pdf','_TWIX_kv.json')
         #print(result_path)
+        if(not os.path.isfile(result_path)):
+            continue 
 
         truth_path = pdf_path.replace('raw','truths').replace('.pdf','.json')
         #print(truth_path)
+        if(not os.path.isfile(truth_path)):
+            continue 
+
+        print(pdf_path)
         
         eval_one_doc(truth_path, result_path)
         

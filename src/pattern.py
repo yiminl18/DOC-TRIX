@@ -1202,10 +1202,10 @@ def filter_non_key(lst, non_key):
 def mix_pattern_extract_pipeline(phrases_bb, predict_labels, phrases, path, debug = 0):
     #get the first record
     #print(phrases)
-    print('predicted labels')
-    print(predict_labels)
+    #print('predicted labels')
+    #print(predict_labels)
     phrases = record_extraction(phrases, predict_labels)
-    print(phrases)
+    #print(phrases)
     record_appearance = {}
     for rid, ps in phrases.items():
         for p in ps:
@@ -1216,7 +1216,7 @@ def mix_pattern_extract_pipeline(phrases_bb, predict_labels, phrases, path, debu
     
     for rid, ps in phrases.items():
         record_appearance,pv = get_bblist_per_record(record_appearance, phrases_bb, ps)
-        print(rid)
+        #print(rid)
         # vals = []
         # for (val,bb) in pv:
         #     vals.append(val)
@@ -1615,6 +1615,8 @@ def kv_extraction(pdf_path, out_path):
     extracted_path = pdf_path.replace('raw','extracted').replace('.pdf','.txt')
     if(not os.path.isfile(extracted_path)):
         return 
+    if(not os.path.isfile(key_path)):
+        return 
     bb_path = get_bb_path(extracted_path)
     
     keywords = read_file(key_path)#predicted keywords
@@ -1630,7 +1632,9 @@ if __name__ == "__main__":
     pdf_folder_path = root_path + '/data/raw'
     pdfs = scan_folder(pdf_folder_path,'.pdf')
     for pdf_path in pdfs:
-        if('RptEmp' not in pdf_path):
+        if('benchmark1' not in pdf_path):
+            continue
+        if('id_143' in pdf_path):
             continue
         print(pdf_path)
         out_path = key.get_key_val_path(pdf_path, 'TWIX')
