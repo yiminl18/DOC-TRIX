@@ -29,6 +29,16 @@ def get_leaf_nodes_paris(data):
     keys = list(set(keys))
     return kvs_record, keys
 
+import random
+
+def write_json(out, path):
+    with open(path, 'w') as json_file:
+        json.dump(out, json_file, indent=4)
+
+
+
+
+
 def clean_phrase(p):
     if(isinstance(p,str)):
         return p.lower().strip()
@@ -171,8 +181,8 @@ def get_PR(results_kvs, truth_kvs):
         else:
             precision /= len(new_result_kv)
 
-        if(precision  > avg_precision):
-            avg_precision = precision
+        # if(precision  > avg_precision):
+        #     avg_precision = precision
         #print('FN:')
         #evaluate recall
         for kv in new_truth_kv:
@@ -186,22 +196,22 @@ def get_PR(results_kvs, truth_kvs):
             #     print(kv)
         #print(len(new_truth_kv))
         recall /= len(new_truth_kv)
-        if(recall > avg_recall):
-            avg_recall = recall
+        # if(recall > avg_recall):
+        #     avg_recall = recall
         
 
         precisions[id] = precision
         recalls[id] = recall 
     
     #compute the average 
-    # avg_precision = 0
-    # avg_recall = 0
-    # for id, precision in precisions.items():
-    #     avg_precision += precision
-    # avg_precision /= len(precisions)
-    # for id, recall in recalls.items():
-    #     avg_recall += recall
-    # avg_recall /= len(recalls)
+    avg_precision = 0
+    avg_recall = 0
+    for id, precision in precisions.items():
+        avg_precision += precision
+    avg_precision /= len(precisions)
+    for id, recall in recalls.items():
+        avg_recall += recall
+    avg_recall /= len(recalls)
 
     return avg_precision, avg_recall
 
@@ -233,6 +243,7 @@ def eval_one_doc(truth_path, result_path):
     #print(truth_kvs)
     avg_precision, avg_recall = get_PR(result_kvs, truth_kvs)
     print(avg_precision, avg_recall)
+    return avg_precision, avg_recall
 
 def get_kv_pairs_csv(result_path):
     kvs = {}
@@ -291,12 +302,14 @@ def eval_benchmark():
     root_path = get_root_path()
     pdf_folder_path = root_path + '/data/raw'
     pdfs = scan_folder(pdf_folder_path,'.pdf')
+    precision = 0
+    recall = 0
+    cnt = 0 
     for pdf_path in pdfs:
         if('benchmark1' not in pdf_path):
             continue
         
-        
-        result_path = pdf_path.replace('data/raw','result').replace('.pdf','_TWIX_kv.json')
+        result_path = pdf_path.replace('data/raw','result').replace('.pdf','.json')
         #print(result_path)
         if(not os.path.isfile(result_path)):
             continue 
@@ -307,8 +320,14 @@ def eval_benchmark():
             continue 
 
         print(pdf_path)
+        cnt += 1
         
-        eval_one_doc(truth_path, result_path)
+        avg_precision, avg_recall = eval_one_doc(truth_path, result_path)
+        precision += avg_precision
+        recall += avg_recall
+    precision /= cnt
+    recall /= cnt
+    print(precision, recall)
         
 def write_list(path, phrases):
     out = ''
@@ -369,6 +388,7 @@ def load_keys():
         #break
 
 if __name__ == "__main__":
+    reverse_pipeline()
     eval_benchmark()
     #load_keys()
 
