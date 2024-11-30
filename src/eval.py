@@ -290,7 +290,8 @@ def eval_benchmark():
         print(pdf_path)
         result_path = pdf_path.replace('data/raw','result').replace('.pdf','__kv.json')
         print(result_path)
-        truth_path = pdf_path.replace('raw','truths/key_value_truth').replace('.pdf','.json')
+
+        truth_path = pdf_path.replace('raw','truths').replace('.pdf','.json')
         print(truth_path)
         
         # eval_one_doc(truth_path, result_path)

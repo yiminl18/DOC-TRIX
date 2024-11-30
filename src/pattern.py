@@ -5,19 +5,13 @@ import math
 import time 
 from scipy.sparse import csr_matrix
 from scipy.sparse.csgraph import min_weight_full_bipartite_matching
-sys.path.append('/Users/yiminglin/Documents/Codebase/Pdf_reverse/')
+root_path = extract.get_root_path()
+sys.path.append(root_path)
 from model import model 
 from gurobipy import Model, GRB
 model_name = 'gpt4o'
 vision_model_name = 'gpt4vision'
 
-def get_metadata(image_path = '/Users/yiminglin/Downloads/page_1.jpg'):
-    instruction = 'Return the headers and footers in this page. Give me the raw output from the image directly, do not add any more text to clarify.' 
-    context = ''
-    prompt = (instruction,context)
-    response = model(vision_model_name,prompt, image_path = image_path)
-    #print(response)
-    return response
 
 def read_file(file):
     data = []
@@ -50,12 +44,6 @@ def record_extraction(pss,predict_labels):
                 first_key = p
     
     return phrases 
-
-def format(lst):
-    l = []
-    for v in lst:
-        l.append(v.lower().strip())
-    return l
 
 def get_bb_path(extracted_file):
     file = extracted_file.replace('.txt','.json')
@@ -1646,26 +1634,11 @@ def kv_extraction(pdf_path, out_path):
 if __name__ == "__main__":
     #print(get_metadata())
     root_path = extract.get_root_path()
-    #print(root_path)
-    tested_paths = []
-    tested_paths.append(root_path + '/data/raw/complaints & use of force/Champaign IL Police Complaints/Investigations_Redacted.pdf')
-    tested_paths.append(root_path + '/data/raw/complaints & use of force/UIUC PD Use of Force/22-274.releasable.pdf')
-    tested_paths.append(root_path + '/data/raw/certification/CT/DecertifiedOfficersRev_9622 Emilie Munson.pdf')
-    tested_paths.append(root_path + '/data/raw/certification/IA/Active_Employment.pdf')
-    tested_paths.append(root_path + '/data/raw/certification/MT/RptEmpRstrDetail Active.pdf')
-    tested_paths.append(root_path + '/data/raw/certification/VT/Invisible Institue Report.pdf')
-
-    id = 0
-    tested_id = 3 #starting from 1x
-    
-
-    for pdf_path in tested_paths:
-        id += 1
-        # if(id != tested_id):
-        #     continue
-        print(pdf_path)
-        out_path = key.get_key_val_path(pdf_path, '')#output path
+    pdf_folder_path = root_path + '/data/raw'
+    pdfs = eval.scan_folder(pdf_folder_path,'.pdf')
+    for pdf_path in pdfs:
+        out_path = key.get_key_val_path(pdf_path, '')
         st = time.time()
         kv_extraction(pdf_path, out_path)
         et=time.time()
-        print(et-st)
+        #print(et-st)
