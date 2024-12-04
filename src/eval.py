@@ -134,8 +134,24 @@ def equal(a,b):
         return 1
     if(b == True and a == '\uf0fc'):
         return 1
-        
+    if(isinstance(a,str) and isinstance(b,str)):
+        if(a.rstrip('.') == b.rstrip('.')):#remove tailing ..
+            return 1
+    if(isinstance(a,str) and isinstance(b,float)):
+        if(can_convert_to_float(a.rstrip('.')) and float(a.rstrip('.')) == b):
+            return 1
+    if(isinstance(b,str) and isinstance(a,float)):
+        if(can_convert_to_float(b.rstrip('.')) and float(b.rstrip('.')) == a):
+            return 1
     return 0
+
+def can_convert_to_float(s):
+    try:
+        float(s)  # Attempt to convert the string to a float
+        return True
+    except ValueError:
+        return False
+
 
 def get_PR(results_kvs, truth_kvs):
     #print(len(truth_kvs))
@@ -306,10 +322,10 @@ def eval_benchmark():
     recall = 0
     cnt = 0 
     for pdf_path in pdfs:
-        if('benchmark1' not in pdf_path):
+        if('id_152' not in pdf_path):
             continue
         
-        result_path = pdf_path.replace('data/raw','result').replace('.pdf','.json')
+        result_path = pdf_path.replace('data/raw','out').replace('.pdf','_azure.json')
         #print(result_path)
         if(not os.path.isfile(result_path)):
             continue 
@@ -388,7 +404,6 @@ def load_keys():
         #break
 
 if __name__ == "__main__":
-    reverse_pipeline()
     eval_benchmark()
     #load_keys()
 
