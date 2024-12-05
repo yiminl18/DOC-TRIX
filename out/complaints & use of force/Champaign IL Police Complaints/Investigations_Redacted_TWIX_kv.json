@@ -1960,5 +1960,118 @@
                 ]
             }
         ]
+    },
+    {
+        "id": 24,
+        "content": [
+            {
+                "type": "table",
+                "content": [
+                    {
+                        "Date": "8/30/2008",
+                        "Number": "08-17",
+                        "Investigator": "Yohnka, Brad",
+                        "Date Assigned": "missing",
+                        "Racial": "No",
+                        "Category / Type": "Formal",
+                        "Location Of Occurrence": "Not Stated",
+                        "Disposition": "SUSTAINED",
+                        "Completed": "missing",
+                        "Recorded On Camera": "No"
+                    },
+                    {
+                        "Date": "missing",
+                        "Number": "missing",
+                        "Investigator": "missing",
+                        "Date Assigned": "9/2/2008",
+                        "Racial": "missing",
+                        "Category / Type": "Citizen",
+                        "Location Of Occurrence": "missing",
+                        "Disposition": "missing",
+                        "Completed": "10/29/2008",
+                        "Recorded On Camera": "N/A"
+                    }
+                ]
+            },
+            {
+                "type": "kv",
+                "content": [
+                    {
+                        "Complainant": "missing"
+                    },
+                    {
+                        "DOB": "missing"
+                    },
+                    {
+                        "Gender": "MALE"
+                    },
+                    {
+                        "Address": "Champaign IL 61820"
+                    },
+                    {
+                        "H Phone": "missing"
+                    },
+                    {
+                        "Type Of Complaint": "missing"
+                    },
+                    {
+                        "Description": "missing"
+                    },
+                    {
+                        "Complaint Disposition": "Complaint #"
+                    },
+                    {
+                        "Name": "missing"
+                    },
+                    {
+                        "ID No.": "missing"
+                    },
+                    {
+                        "Rank": "missing"
+                    },
+                    {
+                        "Division": "missing"
+                    },
+                    {
+                        "Officer Disposition": "missing"
+                    },
+                    {
+                        "Action Taken": "missing"
+                    },
+                    {
+                        "Body Cam": "Officer #"
+                    }
+                ]
+            },
+            {
+                "type": "table",
+                "content": [
+                    {
+                        "Type Of Complaint": "R-3C PROVIDING NAME AND BADGE NUMBER",
+                        "Description": "Wrong Action by Employee",
+                        "Complaint Disposition": "SUSTAINED"
+                    },
+                    {
+                        "Type Of Complaint": "R-5D Use of physical force",
+                        "Description": "Wrong Action by Employee",
+                        "Complaint Disposition": "UNFOUNDED"
+                    }
+                ]
+            },
+            {
+                "type": "table",
+                "content": [
+                    {
+                        "Name": "Ahsell, Brian",
+                        "ID No.": "714-",
+                        "Rank": "OFFICER",
+                        "Division": "Field Operations",
+                        "Officer Disposition": "SUSTAINED",
+                        "Action Taken": "COUNSELING",
+                        "Body Cam": "No"
+                    }
+                ]
+            }
+        ]
     }
 ]

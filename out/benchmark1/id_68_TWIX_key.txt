@@ -1,0 +1,23 @@
+Agency Order #
+Total $
+Office
+Market
+Station
+Assistant
+Version
+Salesperson
+Buyer
+Separation
+CPE
+Agency
+Service
+Rate
+Total GRP
+Primary Demo
+Traffic #
+Con Type
+Flight
+Total CPP
+Total Spots
+Product
+Advertiser

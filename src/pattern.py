@@ -434,11 +434,7 @@ def get_bblist_per_record(record_appearance, phrases_bb, phrases):
             else:
                 appear[p] = appear[p] + 1
 
-            # print(p,c,appear[p],len(lst))
-            # print(phrases_bb[p], cur, cur+c)
             bb = lst[appear[p]]
-            # if('formal' in p):
-            #     print(p,bb, appear[p])
             pv.append((p,bb))
     for p in phrases:
         if(p in phrases_bb):
@@ -772,14 +768,14 @@ def table_extraction(predict_labels, pv, path):
     bbv = find_bb_value_group(vg)
     key_mp = filter_key(bbv, pv, predict_labels)
     headers = identify_headers(key_mp, predict_labels, footer)
-    print(headers)
+    #print(headers)
     # for id, vals in key_mp.items():
     #     print(id)
     #     print(vals)
     
     rows,keys = find_rows(vg, key_mp, bbv)
     #print(rows, keys)
-    print_table(keys, rows)
+    #print_table(keys, rows)
 
 def table_extraction_pipeline(phrases_bb, predict_labels, phrases, path):
     #get phrases for the first record 
@@ -1057,8 +1053,11 @@ def infer_undefined(row_mp, rls):
             rls[row_id] = 'undefined'
     return rls
 
-#def find_key()
-    
+def check_kvs(rid, records, cans):
+    while(rid-1 < len(cans)):
+        records.append(cans[rid-1])
+        rid += 1
+    return records    
  
 def pattern_detect_by_row(pv, predict_labels, rid, debug = 0):
     #refine kv pair by using distance constraint
@@ -1149,7 +1148,13 @@ def pattern_detect_by_row(pv, predict_labels, rid, debug = 0):
     
     return blk, blk_id, row_mp
     
-    
+def load_cands(pdf_path):
+    if('benchmark1' in pdf_path):
+        path = pdf_path.replace('data/raw','result').replace('.pdf','.json')
+    else:
+        path = pdf_path.replace('data/raw','result').replace('.pdf','_TWIX_kv.json')
+    data = read_json(path)
+    return data
     
 def block_decider(rls):
     blk = {}#store the community of all rows belonging to the same block: bid -> a list of row id 
@@ -1199,76 +1204,52 @@ def filter_non_key(lst, non_key):
         nl.append(l)
     return nl
 
-def mix_pattern_extract_pipeline(phrases_bb, predict_labels, phrases, path, debug = 0):
-    #get the first record
-    #print(phrases)
-    #print('predicted labels')
-    #print(predict_labels)
+def mix_pattern_extract_pipeline(phrases_bb, predict_labels, phrases, reCans, path, debug = 0):
     phrases = record_extraction(phrases, predict_labels)
-    #print(phrases)
     record_appearance = {}
     for rid, ps in phrases.items():
         for p in ps:
             record_appearance[p] = 0
-
     records = []
     rid = 1
-    
     for rid, ps in phrases.items():
         record_appearance,pv = get_bblist_per_record(record_appearance, phrases_bb, ps)
-        #print(rid)
-        # vals = []
-        # for (val,bb) in pv:
-        #     vals.append(val)
-        # print(vals)
-        # print(record_appearance)
-        
-        record = ILP_extract(predict_labels, pv, rid)
-        records.append(record)
-        # if(rid > 0):
-        #     break
-    #print(path)
+        record = ILP_extract(predict_labels, pv, rid, reCans)
+        if(len(record) > 0):
+            records.append(record)
+    #print(len(records))
+    records = check_kvs(rid, records, reCans)
     write_json(records, path)
 
-def ILP_extract(predict_keys, pv, rid):
-    # print(predict_keys)
-    # for t in pv:
-    #     print(t)
-    #pv: a list of tuple. Each tuple:  (phrase, bounding box) for current record 
-    #get probability per row 
-    row_mp, row_labels = get_row_probabilities(predict_keys, pv)
+def ILP_extract(predict_keys, pv, rid, recan):
+    if(rid == 1):
+        row_mp, row_labels = get_row_probabilities(predict_keys, pv)
+        #LP formulation to learn row label assignment
 
-    print_rows(row_mp, row_labels)
-    #LP formulation to learn row label assignment
+        #pre-compute all C-alignments 
+        Calign = {}
+        for id1 in range(len(row_mp)):
+            for id2 in range(id1+1, len(row_mp)):
+                c = C_alignment(row_mp, id1, id2)
+                Calign[(id1,id2)] = c
+                Calign[(id2,id1)] = c
+        
+        row_pred_labels = ILP_formulation(row_mp, row_labels, Calign)
 
-    #pre-compute all C-alignments 
-    Calign = {}
-    for id1 in range(len(row_mp)):
-        for id2 in range(id1+1, len(row_mp)):
-            # if(id1 != 6 or id2 != 7):
-            #     continue
-            c = C_alignment(row_mp, id1, id2)
-            Calign[(id1,id2)] = c
-            Calign[(id2,id1)] = c
-            # if(c==1):
-            #     print((id1,id2))
-
-    #print(Calign)
-    row_pred_labels = ILP_formulation(row_mp, row_labels, Calign)
-
-    print(row_pred_labels)
-    #learn template
-    blk, blk_id = template_learn(row_pred_labels)
-    print(blk)
-    print(blk_id)
-    #data extraction 
-    record = data_extraction(rid,blk,blk_id,row_mp,predict_keys)
-    #print(record)
+        #learn template
+        blk, blk_id = template_learn(row_pred_labels)
+        record, candidate = data_extraction(rid,blk,blk_id,row_mp,predict_keys,recan)
+    else:
+        if(rid-1<len(recan)):
+            record = recan[rid-1]
+        else:
+            record = {}
     return record 
 
 def ILP_formulation(row_mp, row_labels, Calign):
     model = Model("RT")
-    model.setParam('OutputFlag', 0)
+    #model.setParam('OutputFlag', 0)
+    
     # create variables 
     # for each row, create four variables 
     vars = {} #row_id -> list of variables 
@@ -1291,7 +1272,7 @@ def ILP_formulation(row_mp, row_labels, Calign):
         var.append(yM)
 
         vars[row_id] = var
-
+    
     #add constraint 1: for each row, the sum of four variables is 1
     for row_id, var in vars.items():
         model.addConstr(var[0] + var[1] + var[2] + var[3] == 1, "SumOnePerRow")
@@ -1490,10 +1471,14 @@ def print_rows(row_mp, row_labels):
                 p_print.append(p)
             print(p_print)
 
-def data_extraction(rid,blk,blk_id,row_mp,predict_labels):
+def data_extraction(rid,blk,blk_id,row_mp,predict_labels,recan):
     out = []
     record = {}
     record['id'] = rid
+    if(rid-1 < len(recan)):
+        re = recan[rid-1]
+    else: 
+        re = {}
 
     for id, lst in blk.items():
         object = {}
@@ -1538,7 +1523,7 @@ def data_extraction(rid,blk,blk_id,row_mp,predict_labels):
     
     record['content'] = out
 
-    return record 
+    return re, record 
 
 def mix_pattern_extract(predict_labels, pv, rid, debug = 0):
     
@@ -1547,8 +1532,8 @@ def mix_pattern_extract(predict_labels, pv, rid, debug = 0):
 
     blk, blk_id, row_mp = pattern_detect_by_row(pv, predict_labels, rid, debug)
 
-    print(blk)
-    print(blk_id)
+    # print(blk)
+    # print(blk_id)
     
     out = []
     record = {}
@@ -1611,20 +1596,24 @@ def write_string(result_path, content):
         file.write(content)
 
 def kv_extraction(pdf_path, out_path):
-    key_path = pdf_path.replace('data/raw','result').replace('.pdf','_key.txt')
-    extracted_path = pdf_path.replace('raw','extracted').replace('.pdf','.txt')
+    key_path = pdf_path.replace('data/raw','out').replace('.pdf','_TWIX_key.txt')
+    extracted_path = key.get_extracted_path(pdf_path)
+    
     if(not os.path.isfile(extracted_path)):
         return 
     if(not os.path.isfile(key_path)):
         return 
     bb_path = get_bb_path(extracted_path)
+    reCans = load_cands(pdf_path)
     
     keywords = read_file(key_path)#predicted keywords
     phrases = read_file(extracted_path)#list of phrases
     phrases_bb = read_json(bb_path)#phrases with bounding boxes
     debug_mode = 0
 
-    mix_pattern_extract_pipeline(phrases_bb, keywords, phrases, out_path, debug_mode)
+    print('Template-based data extraction starts...')
+
+    mix_pattern_extract_pipeline(phrases_bb, keywords, phrases, reCans, out_path, debug_mode)
 
 if __name__ == "__main__":
     #print(get_metadata())
@@ -1632,15 +1621,16 @@ if __name__ == "__main__":
     pdf_folder_path = root_path + '/data/raw'
     pdfs = scan_folder(pdf_folder_path,'.pdf')
     for pdf_path in pdfs:
-        if('benchmark1' not in pdf_path):
-            continue
-        if('id_143' in pdf_path):
-            continue
+        # if('benchmark1' not in pdf_path):
+        #     continue
+        # if('id_143' in pdf_path):
+        #     continue
         print(pdf_path)
         out_path = key.get_key_val_path(pdf_path, 'TWIX')
         st = time.time()
         
         kv_extraction(pdf_path, out_path)
         et=time.time()
+        break
         #print(out_path)
         #print(et-st)

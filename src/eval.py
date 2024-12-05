@@ -281,24 +281,6 @@ def get_kv_pairs_csv(result_path):
                 kvs[record_id].append((key,value))
     return kvs 
 
-# def eval_new_benchmark():
-#     result_folder_path = '/Users/yiminglin/Documents/Codebase/Pdf_reverse/result/benchmark1'
-#     results = scan_folder(result_folder_path, '.csv')
-#     results = sorted(results)
-#     for result_path in results:
-#         #print(result_path)
-#         if('llmns_' not in result_path):
-#             continue
-        
-#         truth_path = result_path.replace('result','data/truths')
-#         truth_path = truth_path.replace('llmns_','')
-#         truth_path = truth_path.replace('csv','json')
-#         if not os.path.exists(truth_path):
-#             continue
-        
-#         print(result_path)
-#         print(truth_path)
-#         eval_one_doc(truth_path, result_path)
 
 def get_key_val_path(raw_path, approach):
     path = raw_path.replace('data/raw','result')
@@ -314,6 +296,8 @@ def get_baseline_result(raw_path, approach):
     new_path = directory_path + '/' + file_name
     return new_path
 
+import os
+
 def eval_benchmark():
     root_path = get_root_path()
     pdf_folder_path = root_path + '/data/raw'
@@ -322,10 +306,10 @@ def eval_benchmark():
     recall = 0
     cnt = 0 
     for pdf_path in pdfs:
-        if('id_152' not in pdf_path):
-            continue
+        # if('Active_Certifications.pdf' not in pdf_path):
+        #     continue
         
-        result_path = pdf_path.replace('data/raw','out').replace('.pdf','_azure.json')
+        result_path = pdf_path.replace('data/raw','out').replace('.pdf','_TWIX_kv.json')
         #print(result_path)
         if(not os.path.isfile(result_path)):
             continue 
@@ -405,7 +389,6 @@ def load_keys():
 
 if __name__ == "__main__":
     eval_benchmark()
-    #load_keys()
 
     
 

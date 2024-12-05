@@ -775,5 +775,139 @@
                 "content": []
             }
         ]
+    },
+    {
+        "id": 5,
+        "content": [
+            {
+                "type": "table",
+                "content": [
+                    {
+                        "YEAR": "missing",
+                        "NAME": "GARCIA, Edwin E.",
+                        "DEPARTMENT": "Hartford Police Department",
+                        "POST ID#": "2993",
+                        "DATE": "3/4/1997",
+                        "REASON": "Felony Conviction"
+                    },
+                    {
+                        "YEAR": "missing",
+                        "NAME": "PAPALLO, Jr., David",
+                        "DEPARTMENT": "East Haddam Police Department",
+                        "POST ID#": "8262",
+                        "DATE": "6/25/1997",
+                        "REASON": "Felony Conviction"
+                    },
+                    {
+                        "YEAR": "missing",
+                        "NAME": "John R.",
+                        "DEPARTMENT": "Montville Police Department",
+                        "POST ID#": "7647",
+                        "DATE": "6/25/1997",
+                        "REASON": "Felony Conviction"
+                    },
+                    {
+                        "YEAR": "missing",
+                        "NAME": "Donnie R.",
+                        "DEPARTMENT": "Norwalk Police Department",
+                        "POST ID#": "1568",
+                        "DATE": "3/4/1997",
+                        "REASON": "Felony Conviction"
+                    },
+                    {
+                        "YEAR": "missing",
+                        "NAME": "Joseph J.",
+                        "DEPARTMENT": "Central CT State University P.D.",
+                        "POST ID#": "7270",
+                        "DATE": "4/9/1997",
+                        "REASON": "Felony Conviction"
+                    },
+                    {
+                        "YEAR": "missing",
+                        "NAME": "NUNES, Joao Q.",
+                        "DEPARTMENT": "Hartford Police Department",
+                        "POST ID#": "3151",
+                        "DATE": "1/6/1995",
+                        "REASON": "Felony Conviction"
+                    },
+                    {
+                        "YEAR": "missing",
+                        "NAME": "RODRIGUEZ, Eddie",
+                        "DEPARTMENT": "New Haven Police Department",
+                        "POST ID#": "N/A",
+                        "DATE": "2/4/1992",
+                        "REASON": "Felony Conviction"
+                    },
+                    {
+                        "YEAR": "missing",
+                        "NAME": "Joseph",
+                        "DEPARTMENT": "Bristol Police Department",
+                        "POST ID#": "N/A",
+                        "DATE": "12/12/1991",
+                        "REASON": "Felony Conviction"
+                    },
+                    {
+                        "YEAR": "missing",
+                        "NAME": "Henry",
+                        "DEPARTMENT": "Hartford Police Department",
+                        "POST ID#": "N/A",
+                        "DATE": "1/6/1989",
+                        "REASON": "Felony Conviction"
+                    },
+                    {
+                        "YEAR": "missing",
+                        "NAME": "CAVALLO, John",
+                        "DEPARTMENT": "Watertown Police Department",
+                        "POST ID#": "N/A",
+                        "DATE": "2/6/1988",
+                        "REASON": "Felony Conviction"
+                    },
+                    {
+                        "YEAR": "missing",
+                        "NAME": "NORTHRUP, Martin",
+                        "DEPARTMENT": "Burlington Police Department",
+                        "POST ID#": "N/A",
+                        "DATE": "2/6/1988",
+                        "REASON": "Felony Conviction"
+                    },
+                    {
+                        "YEAR": "missing",
+                        "NAME": "Robert",
+                        "DEPARTMENT": "Naugatuck Police Department",
+                        "POST ID#": "N/A",
+                        "DATE": "2/6/1988",
+                        "REASON": "Felony Conviction"
+                    },
+                    {
+                        "YEAR": "missing",
+                        "NAME": "RINKO, Robert",
+                        "DEPARTMENT": "New Milford Police Department",
+                        "POST ID#": "N/A",
+                        "DATE": "2/6/1988",
+                        "REASON": "Felony Conviction"
+                    },
+                    {
+                        "YEAR": "missing",
+                        "NAME": "Stark",
+                        "DEPARTMENT": "New Milford Police Department",
+                        "POST ID#": "N/A",
+                        "DATE": "2/6/1988",
+                        "REASON": "Felony Conviction"
+                    },
+                    {
+                        "YEAR": "missing",
+                        "NAME": "Vance",
+                        "DEPARTMENT": "Torrington Police Department",
+                        "POST ID#": "N/A",
+                        "DATE": "2/6/1988",
+                        "REASON": "Felony Conviction"
+                    }
+                ]
+            },
+            {
+                "type": "kv",
+                "content": []
+            }
+        ]
     }
 ]
