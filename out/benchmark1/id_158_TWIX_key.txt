@@ -1,7 +1,7 @@
-Agency Est#
-Total $
-Station/Market
-Product Code
 Brand
+Product Code
+Station/Market
+Total $
 Account Executive
 Description
+Agency Est#

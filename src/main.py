@@ -36,4 +36,3 @@ if __name__ == "__main__":
         #predict the template and extract data
         out_path = key.get_key_val_path(pdf_path, 'TWIX')
         pattern.kv_extraction(pdf_path, out_path)
-        break
