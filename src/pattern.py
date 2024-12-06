@@ -138,18 +138,6 @@ def is_outlier(lst, d):
     return 0
 
 def bipartite_match(edges, num_nodes_A, num_nodes_B):
-    #(left, right and weight)
-    #left and right starting from 0
-    # edges = [
-    #     (0, 0, 3),
-    #     (1, 0, 1),
-    #     (0, 1, 10),
-    #     (2, 0, 1),
-    #     (2, 1, 2)
-    # ]
-
-    # num_nodes_A = 3
-    # num_nodes_B = 2
 
     adjacency_matrix = np.full((num_nodes_A, num_nodes_B), np.inf)
 
@@ -166,10 +154,6 @@ def bipartite_match(edges, num_nodes_A, num_nodes_B):
     # Iterate over the indices returned by the matching function
     for row, col in zip(row_ind, col_ind):
         matching[row] = (col, adjacency_matrix[row,col])
-        #weight += adjacency_matrix[row,col]
-        #print(row, col)
-
-    #print(weight)
     return matching
 
 
@@ -478,10 +462,6 @@ def is_inclusive(b1,b2):
     return 1
 
 def is_aligned(b1,b2):
-    # if (b1[1] <= b2[1] and b1[3]+delta >= b2[3]):
-    #     return 1
-    # if (b2[1] <= b1[1] and b2[3]+delta >= b1[3]):
-    #     return 1
     if(b1[1] > b2[3]):
         return 0
     if(b1[3] < b2[1]):
@@ -768,14 +748,8 @@ def table_extraction(predict_labels, pv, path):
     bbv = find_bb_value_group(vg)
     key_mp = filter_key(bbv, pv, predict_labels)
     headers = identify_headers(key_mp, predict_labels, footer)
-    #print(headers)
-    # for id, vals in key_mp.items():
-    #     print(id)
-    #     print(vals)
     
     rows,keys = find_rows(vg, key_mp, bbv)
-    #print(rows, keys)
-    #print_table(keys, rows)
 
 def table_extraction_pipeline(phrases_bb, predict_labels, phrases, path):
     #get phrases for the first record 
