@@ -27,9 +27,6 @@ if __name__ == "__main__":
             continue
 
         print(pdf_path)
-        # result_path = key.get_result_path(pdf_path)
-        # if os.path.exists(result_path):
-        #     continue
 
         # #predict fields
         key.key_prediction(pdf_path)
