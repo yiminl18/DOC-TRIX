@@ -1,8 +1,8 @@
-Program Name
-Rate
-Market
-Station
-Buyer
-DP
-Email
 Phone
+Buyer
+Email
+Rate
+Station
+Program Name
+Market
+DP

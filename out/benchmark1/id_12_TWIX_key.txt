@@ -1,9 +1,9 @@
-Gas
-Page
 Demurrage
-Size
+Date
+BarCode
+Page
 CO #
 Delivery Code
-Date
 PO #CDLocation
-BarCode
+Size
+Gas
