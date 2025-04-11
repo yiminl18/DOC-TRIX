@@ -1,10 +1,10 @@
-OCT
-Age
+Employee Type
 I.D.
 Instructor
-Employee Type
+Birth Date
+Age
 Sex
 Supervisor
-Birth Date
 Name
 Employee
+OCT

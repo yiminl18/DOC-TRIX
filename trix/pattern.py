@@ -1,11 +1,16 @@
-import key,extract,json,sys,math,os
+import json,sys,math,os
 import numpy as np 
-import key
 import math
-import time 
 from scipy.sparse import csr_matrix
 from scipy.sparse.csgraph import min_weight_full_bipartite_matching
-root_path = extract.get_root_path()
+
+def get_root_path():
+    current_path = os.path.abspath(os.path.dirname(__file__))
+    parent_path = os.path.abspath(os.path.join(current_path, os.pardir))
+    #print("Parent path:", parent_path)
+    return parent_path
+
+root_path = get_root_path()
 sys.path.append(root_path)
 from model import model 
 from gurobipy import Model, GRB
@@ -1518,9 +1523,17 @@ def write_string(result_path, content):
     with open(result_path, 'w') as file:
         file.write(content)
 
+def get_extracted_path(path, method = 'plumber'):
+    path = path.replace('raw','extracted')
+    if('benchmark1' in path):
+        path = path.replace('.pdf', '_' + method +  '.txt')
+    else:
+        path = path.replace('.pdf', '.txt')
+    return path
+
 def template_based_data_extraction(pdf_path, out_path):
     key_path = pdf_path.replace('data/raw','out').replace('.pdf','_TWIX_key.txt')
-    extracted_path = key.get_extracted_path(pdf_path)
+    extracted_path = get_extracted_path(pdf_path)
     
     if(not os.path.isfile(extracted_path)):
         return 

@@ -1,9 +1,9 @@
-Updated By
+Units
+Gross $
 Order Status
 Updated On
+Updated By
+Credit Hold
 Created On
 Created By
-Gross $
-Credit Hold
 Net $
-Units

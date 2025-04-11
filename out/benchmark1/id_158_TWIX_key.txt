@@ -1,7 +1,7 @@
-Description
-Product Code
-Station/Market
-Account Executive
-Total $
-Brand
 Agency Est#
+Brand
+Product Code
+Total $
+Account Executive
+Station/Market
+Description

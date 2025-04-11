@@ -278,7 +278,7 @@ def get_baseline_result(raw_path, approach):
 
 import os
 
-def eval_benchmark():
+def eval():
     root_path = get_root_path()
     pdf_folder_path = root_path + '/data/raw'
     pdfs = scan_folder(pdf_folder_path,'.pdf')
