@@ -296,8 +296,8 @@ def eval():
         #print(truth_path)
         if(not os.path.isfile(truth_path)):
             continue 
-
-        print(pdf_path)
+        pdf_file_name = pdf_path.split('/')[-1]
+        print(pdf_file_name)
         cnt += 1
         
         avg_precision, avg_recall = eval_one_doc(truth_path, result_path)
@@ -305,7 +305,8 @@ def eval():
         recall += avg_recall
     precision /= cnt
     recall /= cnt
-    print(precision, recall)
+    print('average precision:', precision)
+    print('average recall:', recall) 
         
 def write_list(path, phrases):
     out = ''

@@ -1,9 +1,9 @@
-Units
-Gross $
-Order Status
-Updated On
-Updated By
-Credit Hold
-Created On
-Created By
 Net $
+Created By
+Gross $
+Credit Hold
+Units
+Created On
+Updated By
+Updated On
+Order Status
