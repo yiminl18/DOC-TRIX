@@ -1,18 +1,14 @@
 import json,os
-import extract
 import numpy as np
 import scipy.stats
 import sys
-import time 
-import networkx as nx
 from nltk.tokenize import word_tokenize
-import key 
 import tiktoken
-sys.path.append('/Users/yiminglin/Documents/Codebase/Pdf_reverse/')
+current_path = os.path.abspath(os.path.dirname(__file__))
+root_path = os.path.abspath(os.path.join(current_path, os.pardir))
+sys.path.append(root_path)
 from model import model 
 model_name = 'gpt4o'
-# available_encodings = tiktoken.list_encoding_names()
-# print("Available encodings:", available_encodings)
 
 tokenizer = tiktoken.get_encoding("cl100k_base")
 
@@ -207,10 +203,6 @@ def candidate_key_clusters_selection(clusters):
         #important: if all 0, then confidence width is also 0, which makes other node hard dominate this one even it's the worst
         if(p == 0):
             continue
-        # print(cid, p, w)
-        # print(l)
-        # print(response)
-        # print(lst)
         mp[cid] = (p,w)
         cids.append(cid)
 
@@ -324,44 +316,24 @@ def get_truth_path(raw_path):
     path = path.replace('.pdf','.json')
     return path
 
-
-
-def key_prediction_pipeline(data_folder):
-    paths = extract.print_all_document_paths(data_folder)
-    for path in paths:
-        key_prediction(path)
-
 def key_prediction(pdf_path):
     result_path = get_result_path(pdf_path)
     extracted_path = get_extracted_path(pdf_path)
-    #generate reading order vector
     relative_locations = get_relative_locations(pdf_path)
-    reading_order_path = get_relative_location_path(extracted_path)
-    #print(reading_order_path)
-    #write_dict(reading_order_path, relative_locations)
     cans = load_candidate(pdf_path)
 
-    #predict keys
     phrases = relative_locations
     print('perfect match starts...')
     mp, remap = perfect_align_clustering(phrases)
-    #print(remap)
     print('cluster pruning starts...')
     candidate_key_clusters, input_size, output_size = candidate_key_clusters_selection(remap)
     print('re-clustering starts...')
     key_clusters = clustering_group(phrases, remap, candidate_key_clusters, k=1)
     keys = get_keys(cans, remap, key_clusters)
-    #print(keys)
-    #print('input and output token size:', input_size, output_size)
-    #write result
-    write_result(result_path,keys)
 
-if __name__ == "__main__":
-    root_path = extract.get_root_path()
-    data_folder = root_path + '/data/extracted/complaints & use of force/'
-    
-    
-    key_prediction_pipeline(data_folder)
+    write_result(result_path,keys)
+    return keys
+
     
         
         

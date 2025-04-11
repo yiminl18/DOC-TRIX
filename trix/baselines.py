@@ -1,9 +1,11 @@
-import sys
+import sys,os
 import key,eval,time
-sys.path.append('/Users/yiminglin/Documents/Codebase/Pdf_reverse/')
+current_path = os.path.abspath(os.path.dirname(__file__))
+root_path = os.path.abspath(os.path.join(current_path, os.pardir))
+sys.path.append(root_path)
 from model import model 
 from pdf2image import convert_from_path
-model_name = 'gpt4'
+model_name = 'gpt4o'
 vision_model_name = 'gpt4vision'
 
 def LLM_key_extraction(phrases, path):
@@ -65,39 +67,4 @@ def LLM_KV_extraction_vision(image_path, out_path):
     key.write_raw_response(out_path, response)
     return response
 
-if __name__ == "__main__":
-
-    root_path = '/Users/yiminglin/Documents/Codebase/Pdf_reverse'
-    tested_paths = []
-    tested_paths.append(root_path + '/data/raw/complaints & use of force/Champaign IL Police Complaints/Investigations_Redacted.pdf')
-    tested_paths.append(root_path + '/data/raw/complaints & use of force/UIUC PD Use of Force/22-274.releasable.pdf')
-    tested_paths.append(root_path + '/data/raw/certification/CT/DecertifiedOfficersRev_9622 Emilie Munson.pdf')
-    tested_paths.append(root_path + '/data/raw/certification/IA/Active_Employment.pdf')
-    tested_paths.append(root_path + '/data/raw/certification/MT/RptEmpRstrDetail Active.pdf')
-    tested_paths.append(root_path + '/data/raw/certification/VT/Invisible Institue Report.pdf')
-
-    test_lst = [5]
-    
-    for tested_id in range(len(tested_paths)):
-
-        if(tested_id not in test_lst):
-            continue
-        print(tested_id)
-        t1 = time.time()
-        path = tested_paths[tested_id]
-        print(path)
-        name = 'LLM_' + model_name + '_kv_json'
-        result_path = key.get_baseline_result_path(path,name)
-        truth_path = key.get_truth_path(path,1)
-        extracted_path = key.get_extracted_path(path)
-        
-        #pdf_2_image(path,6)
-        phrases = eval.read_file(extracted_path)
-        #LLM_KV_extraction(phrases, result_path)
-        LLM_mix_extraction(phrases, result_path)
-        #image_path = key.get_extracted_image_path(path,0)
-        #print(image_path, result_path)
-        #LLM_KV_extraction_vision(image_path, result_path)
-        t2 = time.time()
-        #print(t2-t1)
     

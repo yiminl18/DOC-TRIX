@@ -1,4 +1,4 @@
-import key,extract,json,sys,csv,math,os
+import key,extract,json,sys,math,os
 import numpy as np 
 import key
 import math
@@ -39,9 +39,10 @@ def read_json(path):
         data = json.load(file)
     return data
 
-def record_extraction(pss,predict_labels):
+def record_extraction(pss,predict_labels,pdf_path):
     #print(predict_labels)
     #only return the first record 
+    stats = load_cands(pdf_path)
     first_key = 'null'
     phrases = {} #record id -> phrases
     rid = 1
@@ -58,7 +59,7 @@ def record_extraction(pss,predict_labels):
                 first_key = p
                 #print('first key:', first_key)
     
-    return phrases 
+    return phrases, stats
 
 def get_bb_path(extracted_file):
     file = extracted_file.replace('.txt','.json')
@@ -189,16 +190,6 @@ def is_metadata(meta, val):
             return 1
     return 0
 
-def key_val_extraction_pipeline(phrases, phrases_bb, predict_labels):
-    #print(metadata)
-    
-    phrases = record_extraction(phrases, predict_labels)
-    record_appearance = {}
-    for p in phrases:
-        record_appearance[p] = 0
-
-    record_appearance,pv = get_bblist_per_record(record_appearance, phrases_bb, phrases)
-    key_val_extraction(pv, predict_labels)
 
 def key_val_extraction_by_first_learn(pv, predict_labels):
     #print(pv, predict_labels)
@@ -366,38 +357,6 @@ def key_oracle(val):
     if('yes' in response.lower()):
         return 1
     return 0
-
-def pattern_detection(phrases, predict_labels, threshold_table = 0.9, threshold_kv = 0.5):
-    phrases = record_extraction(phrases, predict_labels)
-    #create key and value line vectors
-
-    kv = []
-    vv = []
-    kv_match = 0
-    for i in range(len(phrases)):
-        p = phrases[i]
-        if(p in predict_labels):
-            kv.append(i)
-            if(i < len(phrases)-1 and phrases[i+1] not in predict_labels):
-                kv_match += 1
-            # else:
-            #     if(i < len(phrases)-1):
-            #         print(print(p, '***', phrases[i+1]))
-        else:
-            vv.append(i)
-        
-    mismatch = 0
-    for i in range(1,len(kv)):
-        if(kv[i]-kv[i-1] > 1):
-            mismatch += 1
-    k_percentage = (len(kv)-mismatch)/len(kv)
-    kv_percentage = kv_match/len(kv)
-    #print(kv_percentage)
-    if(k_percentage > threshold_table):
-        return 'table'
-    
-    #if((1-k_percentage) )
-    return 'mix'
     
 
 def get_bblist_per_record(record_appearance, phrases_bb, phrases):
@@ -751,15 +710,6 @@ def table_extraction(predict_labels, pv, path):
     
     rows,keys = find_rows(vg, key_mp, bbv)
 
-def table_extraction_pipeline(phrases_bb, predict_labels, phrases, path):
-    #get phrases for the first record 
-    first_record = record_extraction(phrases, predict_labels)
-    record_appearance = {}
-    for p in phrases:
-        record_appearance[p] = 0
-    #get the bounding box vector of phrases for the first record  
-    record_appearance,pv = get_bb_per_record(record_appearance, phrases_bb, first_record)
-    table_extraction(predict_labels, pv, path)
 
 def print_table(keys, rows):
     keys_out = ', '.join(keys)
@@ -1178,8 +1128,8 @@ def filter_non_key(lst, non_key):
         nl.append(l)
     return nl
 
-def mix_pattern_extract_pipeline(phrases_bb, predict_labels, phrases, reCans, path, debug = 0):
-    phrases = record_extraction(phrases, predict_labels)
+def mix_pattern_extract_pipeline(phrases_bb, predict_labels, phrases, path, pdf_path, debug = 0):
+    phrases, stats = record_extraction(phrases, predict_labels, pdf_path)
     record_appearance = {}
     for rid, ps in phrases.items():
         for p in ps:
@@ -1188,11 +1138,10 @@ def mix_pattern_extract_pipeline(phrases_bb, predict_labels, phrases, reCans, pa
     rid = 1
     for rid, ps in phrases.items():
         record_appearance,pv = get_bblist_per_record(record_appearance, phrases_bb, ps)
-        record = ILP_extract(predict_labels, pv, rid, reCans)
+        record = ILP_extract(predict_labels, pv, rid, stats)
         if(len(record) > 0):
             records.append(record)
-    #print(len(records))
-    records = check_kvs(rid, records, reCans)
+    records = check_kvs(rid, records, stats)
     write_json(records, path)
 
 def ILP_extract(predict_keys, pv, rid, recan):
@@ -1569,7 +1518,7 @@ def write_string(result_path, content):
     with open(result_path, 'w') as file:
         file.write(content)
 
-def kv_extraction(pdf_path, out_path):
+def template_based_data_extraction(pdf_path, out_path):
     key_path = pdf_path.replace('data/raw','out').replace('.pdf','_TWIX_key.txt')
     extracted_path = key.get_extracted_path(pdf_path)
     
@@ -1578,7 +1527,7 @@ def kv_extraction(pdf_path, out_path):
     if(not os.path.isfile(key_path)):
         return 
     bb_path = get_bb_path(extracted_path)
-    reCans = load_cands(pdf_path)
+    
     
     keywords = read_file(key_path)#predicted keywords
     phrases = read_file(extracted_path)#list of phrases
@@ -1587,24 +1536,5 @@ def kv_extraction(pdf_path, out_path):
 
     print('Template-based data extraction starts...')
 
-    mix_pattern_extract_pipeline(phrases_bb, keywords, phrases, reCans, out_path, debug_mode)
+    mix_pattern_extract_pipeline(phrases_bb, keywords, phrases, out_path, pdf_path, debug_mode)
 
-if __name__ == "__main__":
-    #print(get_metadata())
-    root_path = extract.get_root_path()
-    pdf_folder_path = root_path + '/data/raw'
-    pdfs = scan_folder(pdf_folder_path,'.pdf')
-    for pdf_path in pdfs:
-        # if('benchmark1' not in pdf_path):
-        #     continue
-        # if('id_143' in pdf_path):
-        #     continue
-        print(pdf_path)
-        out_path = key.get_key_val_path(pdf_path, 'TWIX')
-        st = time.time()
-        
-        kv_extraction(pdf_path, out_path)
-        et=time.time()
-        break
-        #print(out_path)
-        #print(et-st)

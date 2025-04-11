@@ -35,10 +35,6 @@ def write_json(out, path):
     with open(path, 'w') as json_file:
         json.dump(out, json_file, indent=4)
 
-
-
-
-
 def clean_phrase(p):
     if(isinstance(p,str)):
         return p.lower().strip()
@@ -177,11 +173,6 @@ def get_PR(results_kvs, truth_kvs):
         for kv in result_kv:
             new_result_kv.append((clean_phrase(kv[0]), clean_phrase(kv[1])))
 
-        # print(new_truth_kv)
-        # print(new_result_kv)
-        
-        #print('FP:')
-        #evaluate precision
         for kv in new_result_kv:
             is_match = 0
             for kv1 in new_truth_kv:
@@ -189,18 +180,12 @@ def get_PR(results_kvs, truth_kvs):
                     precision += 1
                     is_match = 1
                     break
-            # if(is_match == 0):
-            #     print(kv)
         
         if(len(new_result_kv) == 0):
             precision = 0
         else:
             precision /= len(new_result_kv)
 
-        # if(precision  > avg_precision):
-        #     avg_precision = precision
-        #print('FN:')
-        #evaluate recall
         for kv in new_truth_kv:
             is_match = 0
             for kv1 in new_result_kv:
@@ -208,12 +193,7 @@ def get_PR(results_kvs, truth_kvs):
                     recall += 1
                     is_match = 1
                     break
-            # if(is_match == 0):
-            #     print(kv)
-        #print(len(new_truth_kv))
         recall /= len(new_truth_kv)
-        # if(recall > avg_recall):
-        #     avg_recall = recall
         
 
         precisions[id] = precision
@@ -383,10 +363,7 @@ def load_keys():
         print(keys)
         print(target_path)
         write_list(target_path, keys)
-        #break
-
-if __name__ == "__main__":
-    eval_benchmark()
+        
 
     
 

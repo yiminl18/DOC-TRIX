@@ -5,10 +5,9 @@ import os
 import json
 import boto3
 import pandas as pd
-from PIL import Image, ImageDraw
+from PIL import Image
 from pdf2image import convert_from_path
 import os
-import key 
 import time 
 
 
@@ -243,15 +242,6 @@ def phrase_extract(pdf_path, x_tolerance=3, y_tolerance=3, page_limit = 6):
                 break
             page_break += 1
 
-    # c=0
-    # for p,bb in phrases.items():
-    #     print(p)
-    #     for i in range(min(len(bb),10)):
-    #         print(bb[i])
-    #     print('')
-    #     c+=1
-    #     if(c>=80):
-    #         break
 
     """
     Now take every phrase and split the colon values 
@@ -259,10 +249,6 @@ def phrase_extract(pdf_path, x_tolerance=3, y_tolerance=3, page_limit = 6):
     adjusted_phrases_with_boxes = {}
     c=0
     for phrase, bboxes_list in phrases.items():
-        # print(phrase)
-        # c+=1
-        # if(c>=10):
-        #     break
         if not is_valid_time(phrase) and phrase.count(':') == 1:
             before_colon, after_colon = phrase.split(':')
             # For the part before the colon, include the colon and append each bounding box to the list
@@ -377,9 +363,6 @@ def write_dict(path, d):
 def phrase_extraction_pipeline_pdfplumber(data_folder, page_limit):
     paths = print_all_document_paths(data_folder)
     for path in paths:
-        
-        # if('id_10' not in path):
-        #     continue
 
         st = time.time()
     
@@ -397,8 +380,6 @@ def phrase_extraction_pipeline_pdfplumber(data_folder, page_limit):
 
         et = time.time()
         print(et-st)
-        #write_phrase(text_path, adjusted_phrases)
-        #write_dict(dict_path, phrases)
 
 def get_img(file_path):
     return bytearray(open(file_path, 'rb').read())
@@ -462,9 +443,6 @@ def phrase_extraction_aws(image_folder_path, num_pages, client):
         #print(line)
 
 
-    
-
-
 def pdf_2_image(path, page_num, out_folder):
     images = convert_from_path(path, first_page = 1, last_page = page_num)
     size = min(page_num, len(images))
@@ -474,7 +452,8 @@ def pdf_2_image(path, page_num, out_folder):
     return images
 
 def load_file_keys_aws():
-    keys = pd.read_csv('/Users/yiminglin/Documents/Codebase/credentials/textract_accessKeys.csv')
+    key_path = root_path + 'textract_accessKeys.csv'
+    keys = pd.read_csv(key_path)
     #load client
     client = boto3.client('textract',
                       region_name='us-west-1',
@@ -498,14 +477,10 @@ def create_images_pipeline(raw_folder):
     paths = print_all_document_paths(raw_folder)
     for path in paths:
         print(path)
-        # if('releasable' not in path):
-        #     continue
         text_path = get_text_path(path, '.txt', 'aws')
         dict_path = get_text_path(path, '.json', 'aws')
         image_folder_path = text_path.replace('.txt','_image/')
 
-        #print(text_path)
-        #print(dict_path)
         print(image_folder_path)
         number_of_pages = 15
         create_folder(image_folder_path)
@@ -517,8 +492,6 @@ def phrase_extraction_pipeline_aws(raw_folder):
     paths = print_all_document_paths(raw_folder)
     for path in paths:
         print(path)
-        # if('releasable' not in path):
-        #     continue
         text_path = get_text_path(path, '.txt', 'aws')
         dict_path = get_text_path(path, '.json', 'aws')
         image_folder_path = text_path.replace('.txt','_image/')
@@ -530,13 +503,6 @@ def phrase_extraction_pipeline_aws(raw_folder):
         raw_phrases, phrase_bb = phrase_extraction_aws(image_folder_path, page_number, client)
         write_phrase(text_path, raw_phrases)
         write_dict(dict_path, phrase_bb)
-        #break
-        
-    
-    #pdf_2_image(file_path,number_of_pages,out_folder_path)
-    # doc_lines = get_doc_lines(out_folder_path, number_of_pages)
-    # doc_lines_df = pd.DataFrame(doc_lines, columns=['Page', 'Phrase', 'x1', 'y1', 'x2', 'y2'])
-    # doc_lines_df.to_csv(file_name+'.csv')
 
 import csv
 
@@ -549,16 +515,12 @@ def phrase_extraction_pipeline(data_folder):
         if('relative_location' in path):
             continue
         
-        print(path)
         text_path = path.replace('.csv', '.txt')
         dict_path = path.replace('.csv', '.json')
         if os.path.exists(text_path):
             continue
         raw_phrases, phrases = csv_2_raw_phrases(path)
         
-
-        # print(text_path)
-        # print(dict_path)
         if not os.path.exists(text_path):
             write_phrase(text_path, raw_phrases)
         else:
@@ -568,7 +530,6 @@ def phrase_extraction_pipeline(data_folder):
         else:
             print('exist!')
 
-        #break
 
 
 def csv_2_raw_phrases(csv_path):
@@ -597,11 +558,7 @@ def csv_2_raw_phrases(csv_path):
     return raw_phrases, phrases
     
 
-if __name__ == "__main__":
-    root_path = get_root_path()
-    data_folder = root_path + '/data/extracted/benchmark1/'
     
-    #phrase_extraction_pipeline(data_folder)
    
     
 
