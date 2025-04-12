@@ -8,13 +8,14 @@ Store your OpenAI API in by using 'export OPENAI_API_KEY="your-api-key-here"' or
 pip install -e . 
 ```
 
-### Execute the following command line to run the main code. 
+We created a jupyter notebook in /tests/run_eval.ipynb to reproduce the results, including execute TRIX to extract structured data from our benchmark, and evaluate the results to return precision and recall. 
 
-Command: "python src/main.py"
+### Execute the following command line to run the main code. 
+In /tests/run_eval.ipynb, first execute "trix.key_prediction(pdf_path)" by passing the path of document, then perform "trix.template_based_data_extraction(pdf_path, out_path)" by passing document path and the path to store the results. 
 
 ### Execute the following command line to evaluate the results. 
 
-Command: "python src/eval.py"
+Command: "trix.eval()"
 
 The raw data is stored in data/raw, and the ground truth data is stored in data/truths. The results returned by TWIX is stored in out/. 
 
