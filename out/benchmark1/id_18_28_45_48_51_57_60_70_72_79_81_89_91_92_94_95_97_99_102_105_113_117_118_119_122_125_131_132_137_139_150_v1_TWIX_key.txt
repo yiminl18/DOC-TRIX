@@ -1,28 +1,28 @@
-Main
-Product 2
-Advertiser
-Invoice Date
-Sales Region
-Weeks
+Spots
 Billing Calendar
 Property
-Spots/Week
-Advertiser Code
-Start/End Time
-Estimate #
-MTWTFSS
-Billing Address
-Billing Type
-Agency Ref
-Product 1
-Invoice #
 Rate
-Advertiser Ref
+Main
 Special Handling
-Spots
-Order #
-Agency Code
-Send Payment To
-Billing
+Product 1
+Agency Ref
 Sales Office
+Estimate #
+Advertiser Ref
+Product 2
+Advertiser Code
+MTWTFSS
+Advertiser
+Billing
 Product
+Start/End Time
+Spots/Week
+Billing Address
+Invoice Date
+Invoice #
+Agency Code
+Billing Type
+Send Payment To
+Order #
+Sales Region
+Weeks

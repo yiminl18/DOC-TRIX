@@ -1,9 +1,9 @@
-Net $
-Created By
 Gross $
 Credit Hold
-Units
-Created On
-Updated By
 Updated On
+Created On
+Net $
+Created By
+Updated By
+Units
 Order Status

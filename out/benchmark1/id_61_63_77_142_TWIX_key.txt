@@ -1,14 +1,21 @@
-Description
-Length
-Est. Number
-Total
-Advertiser
-Rate
-IDB Code
-Account
-Qty
-Flight Dates
-Billing Type
-Invoice Month
-Salesperson
 Payment Terms
+Est. Number
+Rate
+ISCI
+Description
+Date
+IDB Code
+Invoice Month
+Spot Classification
+Account
+Advertiser
+Length
+Flight Dates
+Total
+Please Remit To
+Invoice Total
+Copy Name
+Billing Type
+Qty
+Invoice
+Salesperson

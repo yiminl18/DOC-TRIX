@@ -1,18 +1,18 @@
-Comments
-C/P/E
-Start/End Dates
-Total Cost
 Buyer
-Advertiser
-AE
+Line
 Buyer Order #
-Agency
+Advertiser
+Start/End Dates
+Property
+Comments
+Estimate Desc.
+Program
+Primary Demo
+C/P/E
+Total Cost
+AE
 Product Desc.
-Time
+Agency
 Sales Region
 Order Status
-Primary Demo
-Program
-Line
-Property
-Estimate Desc.
+Time

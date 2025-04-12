@@ -1,24 +1,24 @@
-Invoice Num
-Invoice Date
-Account Exec
-CPE
+Rate
 Office
-Dur
-Customer Order
-Billing Period
-Product Desc
+Week Of
 Spots Per Week
+Air Date
+Dur
 For
 Linked Order
-Contract Dates
-Material
-Rate
-M/G For
-Week Of
-M T W T F S S
-Contract Num
-Air Date
-Buy Line Dates
+Invoice Num
 Billing Cycle
+Contract Dates
+M T W T F S S
+CPE
+M/G For
+Invoice Date
+Buy Line Dates
+Customer Order
 Debit
+Billing Period
+Material
+Contract Num
 Remit To
+Product Desc
+Account Exec
