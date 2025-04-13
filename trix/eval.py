@@ -278,16 +278,20 @@ def get_baseline_result(raw_path, approach):
 
 import os
 
-def eval():
+def eval(approach):
     root_path = get_root_path()
     pdf_folder_path = root_path + '/data/raw'
     pdfs = scan_folder(pdf_folder_path,'.pdf')
     precision = 0
     recall = 0
     cnt = 0 
+    
     for pdf_path in pdfs:
-        
-        result_path = pdf_path.replace('data/raw','out').replace('.pdf','_TWIX_kv.json')
+        result_path = ''
+        if approach == 'TRIX':
+            result_path = pdf_path.replace('data/raw','out').replace('.pdf','_TWIX_kv.json')
+        if approach == 'Evaporate-Direct': 
+            result_path = pdf_path.replace('data/raw','out').replace('.pdf','_Evaporate_Direct_kv.json')
         #print(result_path)
         if(not os.path.isfile(result_path)):
             continue 
