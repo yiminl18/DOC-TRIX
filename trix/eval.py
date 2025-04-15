@@ -87,6 +87,10 @@ def equal(a,b):
         return 1
     if(a == '' and b == 'missing'):
         return 1
+    if(a=='[missing]' and b == ''):
+        return 1
+    if(a == '' and b == '[missing]'):
+        return 1
     if(isinstance(b, float) and math.isnan(b) and isinstance(a, str) and a.lower() == 'n/a'):
         return 1
     if(isinstance(a, float) and math.isnan(a) and isinstance(b, str) and b.lower() == 'n/a'):
@@ -148,6 +152,14 @@ def can_convert_to_float(s):
     except ValueError:
         return False
 
+def merge_KVs(kvs):
+    kvl = []
+    for id, kv in kvs.items():
+        for o in kv:
+            kvl.append(o) 
+    kvd = {}
+    kvd[1] = kvl
+    return kvd
 
 def get_PR(results_kvs, truth_kvs):
     #print(len(truth_kvs))
@@ -238,7 +250,7 @@ def eval_one_doc(truth_path, result_path):
         result_kvs = get_kv_pairs_csv(result_path)
     #print(truth_kvs)
     avg_precision, avg_recall = get_PR(result_kvs, truth_kvs)
-    print(avg_precision, avg_recall)
+    print('precision:', avg_precision, 'recall:', avg_recall)
     return avg_precision, avg_recall
 
 def get_kv_pairs_csv(result_path):
@@ -294,11 +306,13 @@ def eval(approach):
             result_path = pdf_path.replace('data/raw','out').replace('.pdf','_Evaporate_Direct_kv.json')
         #print(result_path)
         if(not os.path.isfile(result_path)):
+            #print('result not exsist:', result_path)
             continue 
 
         truth_path = pdf_path.replace('raw','truths').replace('.pdf','.json')
         #print(truth_path)
         if(not os.path.isfile(truth_path)):
+            #print('truth not exist:', truth_path)
             continue 
         pdf_file_name = pdf_path.split('/')[-1]
         print(pdf_file_name)

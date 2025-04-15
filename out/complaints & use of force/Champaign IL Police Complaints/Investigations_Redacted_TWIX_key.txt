@@ -1,7 +1,7 @@
-ID No.
 Action Taken
-Name
+ID No.
 Rank
 Division
-Officer Disposition
 Body Cam
+Name
+Officer Disposition

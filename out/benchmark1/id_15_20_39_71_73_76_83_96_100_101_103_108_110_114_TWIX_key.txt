@@ -1,7 +1,7 @@
-Advertiser
-Contract / Revision
-Product
-Alt Order #
-Type
 Description
+Type
+Product
 Original Date / Revision
+Contract / Revision
+Advertiser
+Alt Order #

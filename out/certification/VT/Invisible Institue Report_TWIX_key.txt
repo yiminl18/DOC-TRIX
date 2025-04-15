@@ -1,7 +1,7 @@
+Shift
 Pos/Rank
-Level
-Assignment
 Service
 Action
-Shift
+Assignment
+Level
 Class
